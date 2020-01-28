@@ -1,7 +1,3 @@
----
-description: Welcome to the documentation of the BitSong Network
----
-
 # Introduction
 
 **BitSong** is a new music platform, which will be built using the [**Cosmos-SDK**](https://cosmos.network/) and the [**IPFS**](https://ipfs.io/) distribuited filesystem.
