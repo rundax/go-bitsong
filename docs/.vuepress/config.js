@@ -1,134 +1,46 @@
 module.exports = {
-    title: "BitSong Network",
+    title: "BitSong Network Docs",
     base: process.env.VUEPRESS_BASE || "/",
     themeConfig: {
-        docsRepo: "bitsongofficial/go-bitsong",
-        docsDir: "docs",
-        editLinks: true,
-        //label: "hub",
-        sidebar: [
-            '/',
-            '/guide',
-            '/validators',
-            {
-                title: "Resources",
-                children: [
-                    {
-                        title: "Tutorials",
-                        path: "https://tutorials.cosmos.network"
-                    },
-                    {
-                        title: "SDK API Reference",
-                        path: "https://godoc.org/github.com/cosmos/cosmos-sdk"
-                    },
-                    {
-                        title: "REST API Spec",
-                        path: "https://cosmos.network/rpc/"
-                    }
-                ]
-            }
+        sidebarDepth: 0,
+        nav: [
+            { text: 'Website', link: 'https://bitsong.io' },
+            { text: 'Player Demo', link: 'https://demo.bitsong.io' },
+            { text: 'Testnet Explorer', link: 'https://testnet.explorebitsong.com' },
+            { text: 'Community', link: 'https://btsg.community' },
+            { text: 'Blog', link: 'https://medium.com/@bitsongofficial' },
+            { text: 'Github', link: 'https://github.com/bitsongofficial' },
         ],
-        gutter: {
-            title: "Help & Support",
-            editLink: true,
-            chat: {
-                title: "Riot Chat",
-                text: "Chat with Cosmos developers on Riot Chat.",
-                url: "https://riot.im/app/#/room/#cosmos-sdk:matrix.org",
-                bg: "linear-gradient(225.11deg, #2E3148 0%, #161931 95.68%)"
+        sidebar: [
+            ['/', 'Introduction'],
+            {
+                title: "Guide",
+                path: "/guide/",
+                children: [
+                    ['/guide/installation.md', 'Installing go-bitsong'],
+                    ['/guide/join-testnet.md', 'Join Public Testnet'],
+                    ['/guide/upgrade-node.md', 'Upgrade Your Node'],
+                ]
             },
-            forum: {
-                title: "Cosmos SDK Forum",
-                text: "Join the SDK Developer Forum to learn more.",
-                url: "https://forum.cosmos.network/",
-                bg: "linear-gradient(225deg, #46509F -1.08%, #2F3564 95.88%)",
-                logo: "cosmos"
+            {
+                title: "Delegators",
+                path: "/delegators/",
+                children: [
+                    ['/delegators/delegator-guide-cli.md', 'Delegator Guide (CLI)'],
+                    ['/delegators/delegator-faq.md', 'Delegator FAQ'],
+                    ['/delegators/delegator-security.md', 'Delegator Security']
+                ]
             },
-            github: {
-                title: "Found an Issue?",
-                text: "Help us improve this page by suggesting edits on GitHub."
-            }
-        },
-        footer: {
-            logo: "/logo-bw.svg",
-            textLink: {
-                text: "cosmos.network",
-                url: "/"
-            },
-            services: [
-                {
-                    service: "medium",
-                    url: "https://blog.cosmos.network/"
-                },
-                {
-                    service: "twitter",
-                    url: "https://twitter.com/cosmos"
-                },
-                {
-                    service: "linkedin",
-                    url: "https://www.linkedin.com/company/tendermint/"
-                },
-                {
-                    service: "reddit",
-                    url: "https://reddit.com/r/cosmosnetwork"
-                },
-                {
-                    service: "telegram",
-                    url: "https://t.me/cosmosproject"
-                },
-                {
-                    service: "youtube",
-                    url: "https://www.youtube.com/c/CosmosProject"
-                }
-            ],
-            smallprint:
-                "This website is maintained by Tendermint Inc. The contents and opinions of this website are those of Tendermint Inc.",
-            links: [
-                {
-                    title: "Documentation",
-                    children: [
-                        {
-                            title: "Cosmos SDK",
-                            url: "https://docs.cosmos.network"
-                        },
-                        {
-                            title: "Cosmos Hub",
-                            url: "https://hub.cosmos.network/"
-                        },
-                        {
-                            title: "Tendermint Core",
-                            url: "https://docs.tendermint.com/"
-                        }
-                    ]
-                },
-                {
-                    title: "Community",
-                    children: [
-                        {
-                            title: "Cosmos blog",
-                            url: "https://blog.cosmos.network/"
-                        },
-                        {
-                            title: "Forum",
-                            url: "https://forum.cosmos.network/"
-                        },
-                        {
-                            title: "Chat",
-                            url: "https://riot.im/app/#/room/#cosmos-sdk:matrix.org"
-                        }
-                    ]
-                },
-                {
-                    title: "Contributing",
-                    children: [
-                        {
-                            title: "Source code on GitHub",
-                            url: "https://github.com/bitsongofficial/go-bitsong/"
-                        }
-                    ]
-                }
-            ]
-        }
+            {
+                title: "Validators",
+                path: "/validators/",
+                children: [
+                    ['/validators/overview.md', 'Overview'],
+                    ['/validators/validator-setup.md', 'Setting Up a Validator'],
+                    ['/validators/validator-faq.md', 'Validator FAQ'],
+                    ['/validators/validator-security.md', 'Validator Security'],
+                ]
+            }]
     },
     plugins: [
         // [
@@ -140,7 +52,7 @@ module.exports = {
         [
             "sitemap",
             {
-                hostname: "https://btsg.dev/docs"
+                hostname: "https://btsg.dev"
             }
         ]
     ]

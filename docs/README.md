@@ -1,4 +1,4 @@
-# Introduction
+# BitSong Networks
 
 **BitSong** is a new music platform, which will be built using the [**Cosmos-SDK**](https://cosmos.network/) and the [**IPFS**](https://ipfs.io/) distribuited filesystem.
 
@@ -13,20 +13,19 @@ Our mission is to enable a simple global blockchain infrastructure that empowers
 
 [**Try the demo**](https://demo.bitsong.io), test the alpha version of a simple web player connected to **BitSong Network**
 
-## BitSong Network
+## Guide
 
 * [Install the `go-bitsong` application](./guide/installation.md)
-* [Set up a full node](https://)
-* [Upgrade to a validator node](https://)
+* [Upgrade Your Node](./guide/upgrade-node.md)
 
 ## Join the BitSong Network Public Testnet
 
-* [Join the testnet](./)
+* [Join the testnet](./guide/join-testnet.md)
 
 ## Additional Resources
 
-* [Validator Resources](https://): Contains documentation for `go-bitsong` validators.
-* [Delegator Resources](https://): Contains documentation for delegators.
-* [Other Resources](https://): Contains documentation on `bitsongcli`, genesis file, service providers, ledger wallets, ...
-* [Cosmos Hub Archives](https://): State archives of past iteration of the BitSong Network \[TODO\].
+* [Validator Resources](./validators/overview.md): Contains documentation for `go-bitsong` validators.
+* [Delegator Resources](./delegators/delegator-guide-cli.md): Contains documentation for delegators.
+* [Other Resources](): [TODO] Contains documentation on `bitsongcli`, genesis file, service providers, ledger wallets, ...
+* [BitSong Network Archives](): [TODO: add link] State archives of past iteration of the BitSong Network.
 
