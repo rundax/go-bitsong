@@ -8,6 +8,8 @@ module.exports = {
         //label: "hub",
         sidebar: [
             '/',
+            '/guide',
+            '/validators',
             {
                 title: "Resources",
                 children: [
@@ -120,13 +122,8 @@ module.exports = {
                     title: "Contributing",
                     children: [
                         {
-                            title: "Contributing to the docs",
-                            url:
-                                "https://github.com/cosmos/cosmos-sdk/blob/master/docs/DOCS_README.md"
-                        },
-                        {
                             title: "Source code on GitHub",
-                            url: "https://github.com/cosmos/cosmos-sdk/"
+                            url: "https://github.com/bitsongofficial/go-bitsong/"
                         }
                     ]
                 }
@@ -143,7 +140,7 @@ module.exports = {
         [
             "sitemap",
             {
-                hostname: "https://hub.cosmos.network"
+                hostname: "https://btsg.dev/docs"
             }
         ]
     ]
