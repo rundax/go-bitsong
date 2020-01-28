@@ -1,4 +1,4 @@
-<p align="center" background="black"><img src="bitsong-logo.png" width="398"></p>
+# README
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/BitSongOfficial/go-bitsong/blob/master/LICENSE)
 
@@ -12,54 +12,63 @@ _NOTE: This is alpha software. Please contact us if you aim to run it in product
 
 **Note**: Requires [Go 1.13.6+](https://golang.org/dl/)
 
-# Install BitSong Blockchain
+## Install BitSong Blockchain
 
 There are many ways you can install BitSong Blockchain Testnet node on your machine.
 
-## From Source
+### From Source
+
 1. **Install Go** by following the [official docs](https://golang.org/doc/install). Remember to set your `$GOPATH` and `$PATH` environment variables, for example:
-    ```bash
+
+   ```bash
     wget https://dl.google.com/go/go1.13.6.linux-amd64.tar.gz
     sudo tar -xvzf go1.13.6.linux-amd64.tar.gz
     sudo mv go /usr/local
-     
+
     cat <<EOF >> ~/.profile  
     export GOPATH=$HOME/go  
     export GO111MODULE=on  
     export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin  
     EOF
-    ```
+   ```
+
 2. **Clone BitSong source code to your machine**
-    ```bash
+
+   ```bash
     mkdir -p $GOPATH/src/github.com/BitSongOfficial
     cd $GOPATH/src/github.com/BitSongOfficial
     git clone https://github.com/BitSongOfficial/go-bitsong.git
     cd go-bitsong
     git checkout v0.3.0
-    ```
-  3. **Compile**
-		```bash
-		# Install the app into your $GOBIN
-		make install
-		# Now you should be able to run the following commands:
-		bitsongd help
-		bitsongcli help
-		```
-		The latest `go-bitsong version` is now installed.
-3. **Run BitSong**
-	```bash
-	bitsongd start
-	```
+   ```
 
-## Running the test network and using the commands
+   1. **Compile**
+
+      ```bash
+        # Install the app into your $GOBIN
+        make install
+        # Now you should be able to run the following commands:
+        bitsongd help
+        bitsongcli help
+      ```
+
+        The latest `go-bitsong version` is now installed.
+
+3. **Run BitSong**
+
+   ```bash
+    bitsongd start
+   ```
+
+### Running the test network and using the commands
 
 To initialize configuration and a `genesis.json` file for your application and an account for the transactions, start by running:
 
->  _*NOTE*_: In the below commands addresses are are pulled using terminal utilities. You can also just input the raw strings saved from creating keys, shown below. The commands require [`jq`](https://stedolan.github.io/jq/download/) to be installed on your machine.
-
->  _*NOTE*_: If you have run the tutorial before, you can start from scratch with a `bitsongd unsafe-reset-all` or by deleting both of the home folders `rm -rf ~/.bitsong*`
-
->  _*NOTE*_: If you have the Cosmos app for ledger and you want to use it, when you create the key with `bitsongcli keys add jack` just add `--ledger` at the end. That's all you need. When you sign, `jack` will be recognized as a Ledger key and will require a device.
+> _NOTE_: In the below commands addresses are are pulled using terminal utilities. You can also just input the raw strings saved from creating keys, shown below. The commands require [`jq`](https://stedolan.github.io/jq/download/) to be installed on your machine.
+>
+> _NOTE_: If you have run the tutorial before, you can start from scratch with a `bitsongd unsafe-reset-all` or by deleting both of the home folders `rm -rf ~/.bitsong*`
+>
+> _NOTE_: If you have the Cosmos app for ledger and you want to use it, when you create the key with `bitsongcli keys add jack` just add `--ledger` at the end. That's all you need. When you sign, `jack` will be recognized as a Ledger key and will require a device.
 
 ```bash
 # Initialize configuration files and genesis file
@@ -106,23 +115,26 @@ bitsongcli query account $(bitsongcli keys show jack -a)
 bitsongcli query account $(bitsongcli keys show alice -a)
 ```
 
-# Transactions
+## Transactions
+
 You can now start the first transaction
 
 ```bash
 bitsongcli tx send --from=$(bitsongcli keys show jack -a)  $(bitsongcli keys show alice -a) 10ubtsg
 ```
 
-# Query
+## Query
+
 Query an account
 
 ```bash
 bitsongcli query account $(bitsongcli keys show jack -a)
 ```
 
-# Module Tracks
+## Module Tracks
 
-### Create track
+#### Create track
+
 ```bash
 bitsongcli tx track create --title "The Show Must Go On" \
   --audio="QmWATWQ7fVPP2EFGu71UkfnqhYXDYH566qy47CnJDgvs8u" \
@@ -139,21 +151,24 @@ bitsongcli tx track create --title "The Show Must Go On" \
   -b block
 ```
 
-### Deposit on track
+#### Deposit on track
+
 ```bash
 bitsongcli tx track deposit 1 10000000ubtsg --from jack
 bitsongcli tx track deposit 1 10000000ubtsg --from alice
 bitsongcli tx track deposit 1 80000000ubtsg --from alice
 ```
 
-### Play Track TX
+#### Play Track TX
+
 Currently payout epoch: 60 blocks
 
 ```bash
 bitsongcli tx track play 1 --from alice
 ```
 
-### Query on tracks
+#### Query on tracks
+
 ```bash
 # Query all tracks with status Nil
 bitsongcli query track all
@@ -183,37 +198,38 @@ bitsongcli query track shares
 bitsongcli query track deposits 1
 ```
 
-# Module Reward
+## Module Reward
 
 Query the Reward Pool
+
 ```bash
 bitsongcli query reward all
 ```
 
-## Resources
-- [Official Website](https://bitsong.io)
+### Resources
 
-### Community
-- [Twitter](https://twitter.com/BitSongOfficial)
-- [Telegram Channel (English)](https://t.me/BitSongOfficial)
-- [Medium](https://medium.com/@BitSongOfficial)
-- [Reddit](https://www.reddit.com/r/bitsong/)
-- [Facebook](https://www.facebook.com/BitSongOfficial)
-- [BitcoinTalk ANN](https://bitcointalk.org/index.php?topic=2850943)
-- [Linkedin](https://www.linkedin.com/company/bitsong)
-- [Instagram](https://www.instagram.com/bitsong_official/)
+* [Official Website](https://bitsong.io)
 
-## License
+#### Community
+
+* [Twitter](https://twitter.com/BitSongOfficial)
+* [Telegram Channel \(English\)](https://t.me/BitSongOfficial)
+* [Medium](https://medium.com/@BitSongOfficial)
+* [Reddit](https://www.reddit.com/r/bitsong/)
+* [Facebook](https://www.facebook.com/BitSongOfficial)
+* [BitcoinTalk ANN](https://bitcointalk.org/index.php?topic=2850943)
+* [Linkedin](https://www.linkedin.com/company/bitsong)
+* [Instagram](https://www.instagram.com/bitsong_official/)
+
+### License
 
 MIT License
 
-## Versioning
+### Versioning
 
-### SemVer
+#### SemVer
 
-BitSong uses [SemVer](http://semver.org/) to determine when and how the version changes.
-According to SemVer, anything in the public API can change at any time before version 1.0.0
+BitSong uses [SemVer](http://semver.org/) to determine when and how the version changes. According to SemVer, anything in the public API can change at any time before version 1.0.0
 
-To provide some stability to BitSong users in these 0.X.X days, the MINOR version is used
-to signal breaking changes across a subset of the total public API. This subset includes all
-interfaces exposed to other processes, but does not include the in-process Go APIs.
+To provide some stability to BitSong users in these 0.X.X days, the MINOR version is used to signal breaking changes across a subset of the total public API. This subset includes all interfaces exposed to other processes, but does not include the in-process Go APIs.
+
