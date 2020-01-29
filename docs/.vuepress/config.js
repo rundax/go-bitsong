@@ -20,6 +20,7 @@ module.exports = {
                     ['/guide/installation.md', 'Installing go-bitsong'],
                     ['/guide/join-testnet.md', 'Join Public Testnet'],
                     ['/guide/upgrade-node.md', 'Upgrade Your Node'],
+                    ['/guide/bitsongcli.md', 'BitSong CLI'],
                 ]
             },
             {
@@ -43,12 +44,12 @@ module.exports = {
             }]
     },
     plugins: [
-        // [
-        //   "@vuepress/google-analytics",
-        //   {
-        //     ga: "UA-51029217-12"
-        //   }
-        // ],
+        [
+            "@vuepress/google-analytics",
+            {
+                ga: "UA-11653102-15"
+            }
+        ],
         [
             "sitemap",
             {
