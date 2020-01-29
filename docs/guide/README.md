@@ -1,16 +1,8 @@
-# Guide
-
-This folder contains tutorials related to the `go-bitsong` application.
-
-- [Installing `go-bitsong`](./installation.md)
-- [Running a full-node for a `go-bitsong` testnet](./join-testnet.md)
-- [Upgrading a Node from a previous version](./upgrade-node.md)
-
 
 ## Guide
 
-* [Install the `go-bitsong` application](./guide/installation.md)
-* [Upgrade Your Node](./guide/upgrade-node.md)
+* [Install BitSong Network](./installation.md)
+* [How to use BitSong CLI](./bitsongcli.md)
 
 ## Join the BitSong Network Public Testnet
 
