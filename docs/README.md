@@ -1,31 +1,68 @@
-# BitSong Networks
+---
+home: true
+actionText: Get Started  →
+actionLink: /guide/
+footer: MIT Licensed | Copyright @ 2020 bitsong
+---
 
-**BitSong** is a new music platform, which will be built using the [**Cosmos-SDK**](https://cosmos.network/) and the [**IPFS**](https://ipfs.io/) distribuited filesystem.
+<div class="features">
+  <div class="feature">
+    <h2>Tokenize your productions</h2>
+    <p>Tokenize your productions, receive new investments for your new productions and share your rewards with all your fans.</p>
+  </div>
+  <div class="feature">
+    <h2>Cosmos-SDK based</h2>
+    <p>BitSong is a new music platform, which is built using <a href="https://cosmos.network" target="_blank">Cosmos-SDK</a></b> and the distributed <a href="https://ipfs.io/" target="_blank">IPFS</a></b> filesystem.</p>
+  </div>
+  <div class="feature">
+    <h2>Blockchain Distribution</h2>
+    <p>Your music will be distributed via BitSong on all its clients. For each track listened, you will receive a real-time <b>BTSG reward</b>.</p>
+  </div>
+  <div class="feature">
+    <h2>Immutable streams</h2>
+    <p>Thanks to blockchain technology, each stream will be recorded and impossible to modify.</p>
+  </div>
+  <div class="feature">
+    <h2>Payments in real time</h2>
+    <p>When one of your tunes is listened to, <b><i>you will be rewarded in real time in BTSG, and your fans will receive a portion of your rewards.</i></b></p>
+  </div>
+  <div class="feature">
+    <h2>Distributied Governance</h2>
+    <p>Distributed governance means that there is no element that can make decisions independently.</p>
+  </div>
+</div>
 
-Our mission is to enable a simple global blockchain infrastructure that empowers the music industry.
+## Try BitSong Network
+Currently tested for macOS and Linux
 
-* **Upload your music**. Upload all your productions via [**BitSong**](https://bitsong.io), your music will be saved on [**IPFS**](https://ipfs.io/) an immutable and distributed storage.
-* **Blockchain Distribution**. Your music will be distributed via BitSong on all its clients. For each track listened, you will receive a real-time **BTSG** reward.
-* **Immutable streams**. Thanks to blockchain technology, each stream will be recorded and impossible to modify.
-* **Payments in real time**. When one of your tunes is listened to, _**you will be rewarded in real time in BTSG, and your fans will receive a portion of your profits.**_
-* **Tokenize your productions**. Tokenize your productions, receive new investments for your new productions and share your rewards with all your fans.
-* **Distributied Governance**. Distributed governance means that there is no element that can make decisions independently.
+### 1. Install go 1.13+
+``` bash
+wget https://dl.google.com/go/go1.13.6.linux-amd64.tar.gz
+sudo tar -xvzf go1.13.6.linux-amd64.tar.gz
+sudo mv go /usr/local
+cat <<EOF >> ~/.profile  
+export GOPATH=$HOME/go  
+export GO111MODULE=on  
+export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin  
+EOF
 
-[**Try the demo**](https://demo.bitsong.io), test the alpha version of a simple web player connected to **BitSong Network**
+source ~/.profile
+```
 
-## Guide
+### 2. Clone go-bitsong
+``` bash
+git clone https://github.com/bitsongofficial/go-bitsong.git && cd go-bitsong
+```
 
-* [Install the `go-bitsong` application](./guide/installation.md)
-* [Upgrade Your Node](./guide/upgrade-node.md)
+### 3. Checkout the latest version
+``` bash
+git checkout v0.3.0
+```
 
-## Join the BitSong Network Public Testnet
+### 4. Compile go-bitsong
+``` bash
+make install
 
-* [Join the testnet](./guide/join-testnet.md)
-
-## Additional Resources
-
-* [Validator Resources](./validators/overview.md): Contains documentation for `go-bitsong` validators.
-* [Delegator Resources](./delegators/delegator-guide-cli.md): Contains documentation for delegators.
-* [Other Resources](): [TODO] Contains documentation on `bitsongcli`, genesis file, service providers, ledger wallets, ...
-* [BitSong Network Archives](): [TODO: add link] State archives of past iteration of the BitSong Network.
-
+# go-bitsong version
+bitsongd version --long
+```

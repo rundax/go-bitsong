@@ -1,8 +1,8 @@
 module.exports = {
-    title: "BitSong Network Docs",
+    title: "BitSong Network",
+    description: "Welcome to the BitSong developer site!",
     base: process.env.VUEPRESS_BASE || "/",
     themeConfig: {
-        sidebarDepth: 0,
         nav: [
             { text: 'Website', link: 'https://bitsong.io' },
             { text: 'Player Demo', link: 'https://demo.bitsong.io' },
@@ -12,12 +12,11 @@ module.exports = {
             { text: 'Github', link: 'https://github.com/bitsongofficial' },
         ],
         sidebar: [
-            ['/', 'Introduction'],
             {
                 title: "Guide",
                 path: "/guide/",
                 children: [
-                    ['/guide/installation.md', 'Installing go-bitsong'],
+                    ['/guide/installation.md', 'Install BitSong Network'],
                     ['/guide/join-testnet.md', 'Join Public Testnet'],
                     ['/guide/upgrade-node.md', 'Upgrade Your Node'],
                     ['/guide/bitsongcli.md', 'BitSong CLI'],
