@@ -56,8 +56,8 @@ $ bitsongcli version --long
 name: go-bitsong
 server_name: bitsongd
 client_name: bitsongcli
-version: 0.3.0
-commit: 1dc65dbb84309435ab9e87c67202c071e0f0745c
+version: 0.3.1
+commit: 4a2595e9c9308196e2a27ff0c914e0217696cb72
 build_tags: netgo,ledger
 go: go version go1.13.6 linux/amd64
 ```

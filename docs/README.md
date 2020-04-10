@@ -33,34 +33,39 @@ footer: MIT Licensed | Copyright @ 2020 bitsong
 </div>
 
 ## Try BitSong Network
+
 Currently tested for macOS and Linux
 
 ### 1. Install go 1.13+
-``` bash
+
+```bash
 wget https://dl.google.com/go/go1.13.6.linux-amd64.tar.gz
 sudo tar -xvzf go1.13.6.linux-amd64.tar.gz
 sudo mv go /usr/local
-cat <<EOF >> ~/.profile  
-export GOPATH=$HOME/go  
-export GO111MODULE=on  
-export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin  
+cat <<EOF >> ~/.profile
+export GOPATH=$HOME/go
+export GO111MODULE=on
+export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin
 EOF
 
 source ~/.profile
 ```
 
 ### 2. Clone go-bitsong
-``` bash
+
+```bash
 git clone https://github.com/bitsongofficial/go-bitsong.git && cd go-bitsong
 ```
 
 ### 3. Checkout the latest version
-``` bash
-git checkout v0.3.0
+
+```bash
+git checkout v0.3.1
 ```
 
 ### 4. Compile go-bitsong
-``` bash
+
+```bash
 make install
 
 # go-bitsong version
