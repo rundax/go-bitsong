@@ -14,33 +14,11 @@ import (
 )
 
 var (
-	mockTitle          = "The Show Must Go On"
-	mockEmptyTitle     = ""
-	mockEmptyAttribute = map[string]string{}
-	mockContent        = types.Content{
-		Path:        "/ipfs/Qm....",
-		ContentType: "",
-		Duration:    0,
-		Attributes:  nil,
-	}
-	mockEmptyContent      = types.Content{}
-	mockTrackMediaNoVideo = types.TrackMedia{
-		Audio: mockContent,
-		Video: mockEmptyContent,
-		Image: mockContent,
-	}
-	mockEmptyTrackMedia     = types.TrackMedia{}
+	mockTitle               = "The Show Must Go On"
+	mockIpfs                = "/ipfs/QmWWQSuPMS6aXCbZKpEjPHPUZN2NjB3YrhFTHsV4X3vb2t"
 	mockRightHolder1        = types.NewRightHolder(sdk.AccAddress(crypto.AddressHash([]byte("rightHolder1"))), 100)
-	mockRightHolder2        = types.NewRightHolder(sdk.AccAddress(crypto.AddressHash([]byte("rightHolder2"))), 25)
-	mockRightHolder3        = types.NewRightHolder(sdk.AccAddress(crypto.AddressHash([]byte("rightHolder3"))), 25)
-	mockRightHolder4        = types.NewRightHolder(sdk.AccAddress(crypto.AddressHash([]byte("rightHolder4"))), 50)
 	mockRightsHoldersSingle = types.RightsHolders{
 		mockRightHolder1,
-	}
-	mockRightsHoldersMultiple = types.RightsHolders{
-		mockRightHolder2,
-		mockRightHolder3,
-		mockRightHolder4,
 	}
 	mockRewards = types.TrackRewards{
 		Users:     10,
@@ -50,12 +28,10 @@ var (
 	mockHexDecoded, _ = hex.DecodeString("B0FA2953B126722264F67828AF7443144C85D867")
 	mockTrackAddr1    = crypto.Address(mockHexDecoded)
 	mockTrack         = types.Track{
-		Title:         mockTitle,
-		Attributes:    mockEmptyAttribute,
-		Media:         mockTrackMediaNoVideo,
+		Path:          mockIpfs,
 		Rewards:       mockRewards,
 		RightsHolders: mockRightsHoldersSingle,
-		SubmitTime:    time.Time{},
+		CreatedAt:     time.Time{},
 		Owner:         nil,
 	}
 )

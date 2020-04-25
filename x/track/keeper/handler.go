@@ -23,7 +23,7 @@ func NewHandler(keeper Keeper) sdk.Handler {
 
 // handleMsgCreate handles the creation of a new track
 func handleMsgCreate(ctx sdk.Context, keeper Keeper, msg types.MsgCreate) (*sdk.Result, error) {
-	track := types.NewTrack(msg.Title, msg.Media, msg.Attributes, msg.Rewards, msg.RightsHolders, ctx.BlockHeader().Time, msg.Owner)
+	track := types.NewTrack(msg.Path, msg.Rewards, msg.RightsHolders, msg.Owner)
 	trackAddr := keeper.Create(ctx, track)
 
 	ctx.EventManager().EmitEvent(

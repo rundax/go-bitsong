@@ -21,10 +21,6 @@ func initConfig() (sdk.AccAddress, time.Time, types.Track) {
 	owner := sdk.AccAddress(crypto.AddressHash([]byte(`owner`)))
 	timeZone, _ := time.LoadLocation("UTC")
 	date := time.Date(2020, 1, 1, 12, 00, 00, 000, timeZone)
-	trackAttrs := map[string]string{
-		"title":   `The Show Must Go On`,
-		"artists": `Queen`,
-	}
 	trackRewards := types.TrackRewards{
 		Users:     10,
 		Playlists: 10,
@@ -37,29 +33,10 @@ func initConfig() (sdk.AccAddress, time.Time, types.Track) {
 		},
 	}
 
-	trackMedia := types.TrackMedia{
-		Audio: types.Content{
-			Path:        "/ipfs/QM....",
-			ContentType: "audio/x-mpeg",
-			Duration:    5,
-			Attributes:  nil,
-		},
-		Image: types.Content{
-			Path:        "/ipfs/QM....",
-			ContentType: "image/jpeg",
-			Duration:    0,
-			Attributes:  nil,
-		},
-		Video: types.Content{},
-	}
-
 	track := types.NewTrack(
-		"The Show Must Go On",
-		trackMedia,
-		trackAttrs,
+		mockIpfs,
 		trackRewards,
 		trackRightsHolders,
-		date,
 		owner,
 	)
 
@@ -171,8 +148,7 @@ func TestKeeper_CreateTrack(t *testing.T) {
 
 			expected, _ := k.GetTrack(ctx, generatedTrackAddr)
 			require.Equal(t, expected.Address, generatedTrackAddr)
-			require.Equal(t, expected.Title, test.newTrack.Title)
-			require.True(t, expected.Media.Equals(test.newTrack.Media))
+			require.Equal(t, expected.Path, test.newTrack.Path)
 		})
 	}
 }
@@ -194,6 +170,9 @@ func Test_generateTrackAddress(t *testing.T) {
 
 	acc = generateTrackAddress(uint64(400000000000))
 	require.Equal(t, "CCE1469BDEFFA9CC460B3ED46007A2DCAE5515FD", acc.String())
+
+	acc = crypto.AddressHash([]byte("/ipfs/QmWWQSuPMS6aXCbZKpEjPHPUZN2NjB3YrhFTHsV4X3vb2t"))
+	fmt.Println(acc)
 }
 
 func TestKeeper_autoIncrementID(t *testing.T) {

@@ -111,7 +111,7 @@ func (k Keeper) Create(ctx sdk.Context, track types.Track) crypto.Address {
 	trackID := k.autoIncrementID(ctx)
 
 	track.Address = generateTrackAddress(trackID)
-	track.SubmitTime = ctx.BlockHeader().Time
+	track.CreatedAt = ctx.BlockHeader().Time
 
 	k.SetTrack(ctx, track)
 

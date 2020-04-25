@@ -27,12 +27,12 @@ func queryTrack(ctx sdk.Context, path []string, req abci.RequestQuery, keeper Ke
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, fmt.Sprintf("unknown track addr %s", path[0]))
 	}
 
-	hex, err := hex.DecodeString(path[0])
+	hexDS, err := hex.DecodeString(path[0])
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, fmt.Sprintf("unknown track addr %s", path[0]))
 	}
 
-	trackAddr := crypto.Address(hex)
+	trackAddr := crypto.Address(hexDS)
 	track, ok := keeper.GetTrack(ctx, trackAddr)
 	if !ok {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, fmt.Sprintf("track addr %s not found", path[0]))

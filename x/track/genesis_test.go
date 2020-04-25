@@ -17,33 +17,9 @@ import (
 )
 
 var (
-	mockTitle          = "The Show Must Go On"
-	mockEmptyTitle     = ""
-	mockEmptyAttribute = types.Attributes(nil)
-	mockContent        = types.Content{
-		Path:        "/ipfs/Qm....",
-		ContentType: "",
-		Duration:    0,
-		Attributes:  nil,
-	}
-	mockEmptyContent      = types.Content{}
-	mockTrackMediaNoVideo = types.TrackMedia{
-		Audio: mockContent,
-		Video: mockEmptyContent,
-		Image: mockContent,
-	}
-	mockEmptyTrackMedia     = types.TrackMedia{}
 	mockRightHolder1        = types.NewRightHolder(sdk.AccAddress(crypto.AddressHash([]byte("rightHolder1"))), 100)
-	mockRightHolder2        = types.NewRightHolder(sdk.AccAddress(crypto.AddressHash([]byte("rightHolder2"))), 25)
-	mockRightHolder3        = types.NewRightHolder(sdk.AccAddress(crypto.AddressHash([]byte("rightHolder3"))), 25)
-	mockRightHolder4        = types.NewRightHolder(sdk.AccAddress(crypto.AddressHash([]byte("rightHolder4"))), 50)
 	mockRightsHoldersSingle = types.RightsHolders{
 		mockRightHolder1,
-	}
-	mockRightsHoldersMultiple = types.RightsHolders{
-		mockRightHolder2,
-		mockRightHolder3,
-		mockRightHolder4,
 	}
 	mockRewards = types.TrackRewards{
 		Users:     10,
@@ -56,10 +32,8 @@ var (
 	mockTrackAddr = crypto.Address(tAddr)
 	mockTracks    = types.Tracks{
 		types.Track{
-			Title:         mockTitle,
+			Path:          "/ipfs/QmWWQSuPMS6aXCbZKpEjPHPUZN2NjB3YrhFTHsV4X3vb2t",
 			Address:       mockTrackAddr,
-			Attributes:    mockEmptyAttribute,
-			Media:         mockTrackMediaNoVideo,
 			Rewards:       mockRewards,
 			RightsHolders: mockRightsHoldersSingle,
 			Totals: types.TrackTotals{
@@ -67,11 +41,10 @@ var (
 				Rewards:  sdk.NewCoin(btsg.BondDenom, sdk.ZeroInt()),
 				Accounts: 0,
 			},
-			SubmitTime: mockDate,
-			Owner:      mockOwner,
+			CreatedAt: mockDate,
+			Owner:     mockOwner,
 		},
 	}
-	mockGenesisState = NewGenesisState(1, mockTracks)
 )
 
 type TestInput struct {

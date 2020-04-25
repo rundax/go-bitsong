@@ -19,12 +19,7 @@ func Test_queryTrack(t *testing.T) {
 
 	owner := sdk.AccAddress(crypto.AddressHash([]byte(`owner`)))
 	timeZone, _ := time.LoadLocation("UTC")
-	date := time.Date(2020, 1, 1, 12, 00, 00, 000, timeZone)
 	testDate := time.Date(0001, 1, 1, 0, 00, 00, 000, timeZone)
-	trackAttrs := map[string]string{
-		"title":   `The Show Must Go On`,
-		"artists": `Queen`,
-	}
 	trackRewards := trackTypes.TrackRewards{
 		Users:     10,
 		Playlists: 10,
@@ -35,22 +30,6 @@ func Test_queryTrack(t *testing.T) {
 			Address: sdk.AccAddress(crypto.AddressHash([]byte(`test`))),
 			Quota:   100,
 		},
-	}
-
-	trackMedia := trackTypes.TrackMedia{
-		Audio: trackTypes.Content{
-			Path:        "/ipfs/QM....",
-			ContentType: "audio/x-mpeg",
-			Duration:    5,
-			Attributes:  nil,
-		},
-		Image: trackTypes.Content{
-			Path:        "/ipfs/QM....",
-			ContentType: "image/jpeg",
-			Duration:    0,
-			Attributes:  nil,
-		},
-		Video: trackTypes.Content{},
 	}
 
 	tests := []struct {
@@ -79,21 +58,16 @@ func Test_queryTrack(t *testing.T) {
 			name: "Track is returned properly",
 			storedTracks: trackTypes.Tracks{
 				trackTypes.NewTrack(
-					"The Show Must Go On",
-					trackMedia,
-					trackAttrs,
+					mockIpfs,
 					trackRewards,
 					trackRightsHolders,
-					date,
 					owner,
 				),
 			},
 			path: []string{trackTypes.QueryTrack, "B0FA2953B126722264F67828AF7443144C85D867"},
 			expResult: trackTypes.Track{
-				Title:         "The Show Must Go On",
+				Path:          mockIpfs,
 				Address:       generateTrackAddress(uint64(1)),
-				Attributes:    trackAttrs,
-				Media:         trackMedia,
 				Rewards:       trackRewards,
 				RightsHolders: trackRightsHolders,
 				Totals: trackTypes.TrackTotals{
@@ -101,8 +75,8 @@ func Test_queryTrack(t *testing.T) {
 					Rewards:  sdk.NewCoin(types.BondDenom, sdk.ZeroInt()),
 					Accounts: 0,
 				},
-				SubmitTime: testDate,
-				Owner:      owner,
+				CreatedAt: testDate,
+				Owner:     owner,
 			},
 		},
 	}

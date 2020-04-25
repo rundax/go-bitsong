@@ -6,8 +6,8 @@ import (
 )
 
 type TrackTotals struct {
-	Streams     uint64   `json:"streams" yaml:"streams"`
-	Rewards   sdk.Coin `json:"rewards" yaml:"rewards"`
+	Streams  uint64   `json:"streams" yaml:"streams"`
+	Rewards  sdk.Coin `json:"rewards" yaml:"rewards"`
 	Accounts uint64   `json:"accounts" yaml:"accounts"`
 }
 

@@ -19,7 +19,7 @@ import (
 )
 
 const (
-	flagTitle = "title"
+	flagPath = "path"
 )
 
 // GetTxCmd returns the transaction commands for this module
@@ -50,12 +50,10 @@ func GetCmdCreate(cdc *codec.Codec) *cobra.Command {
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(authclient.GetTxEncoder(cdc))
 			cliCtx := context.NewCLIContextWithInput(inBuf).WithCodec(cdc)
 
-			title := viper.GetString(flagTitle)
+			path := viper.GetString(flagPath)
 
 			msg := types.NewMsgCreate(
-				title,
-				nil,
-				types.TrackMedia{},
+				path,
 				types.TrackRewards{},
 				types.RightsHolders{},
 				cliCtx.FromAddress,
@@ -65,7 +63,7 @@ func GetCmdCreate(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().String(flagTitle, "", "Title of the track")
+	cmd.Flags().String(flagPath, "", "Title of the track")
 
 	return cmd
 }

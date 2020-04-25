@@ -2,6 +2,7 @@ package rest
 
 import (
 	"github.com/bitsongofficial/go-bitsong/x/track/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 	"github.com/gorilla/mux"
 
@@ -16,9 +17,8 @@ func RegisterRoutes(cliCtx context.CLIContext, r *mux.Router) {
 
 type CreateTrackReq struct {
 	BaseReq       rest.BaseReq        `json:"base_req"`
-	Title         string              `json:"title"`
-	Attributes    types.Attributes    `json:"attributes"`
-	Media         types.TrackMedia    `json:"media"`
+	Path          string              `json:"path"`
 	Rewards       types.TrackRewards  `json:"rewards"`
 	RightsHolders types.RightsHolders `json:"rights_holders"`
+	Owner         sdk.AccAddress      `json:"owner"`
 }

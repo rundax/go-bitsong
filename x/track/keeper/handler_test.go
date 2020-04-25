@@ -10,8 +10,6 @@ import (
 
 var mockMsgCreate = types.NewMsgCreate(
 	mockTitle,
-	mockEmptyAttribute,
-	mockTrackMediaNoVideo,
 	mockRewards,
 	mockRightsHoldersSingle,
 	mockOwner,

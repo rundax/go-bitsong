@@ -36,7 +36,7 @@ func createTrackHandler(cliCtx context.CLIContext) http.HandlerFunc {
 			return
 		}
 
-		msg := types.NewMsgCreate(req.Title, req.Attributes, req.Media, req.Rewards, req.RightsHolders, owner)
+		msg := types.NewMsgCreate(req.Path, req.Rewards, req.RightsHolders, owner)
 		if err = msg.ValidateBasic(); err != nil {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
 			return
