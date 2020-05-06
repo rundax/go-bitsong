@@ -2,54 +2,53 @@ package main
 
 import (
 	"encoding/json"
+	"github.com/bitsongofficial/go-bitsong/types"
 	"io"
 
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	codecstd "github.com/cosmos/cosmos-sdk/codec/std"
-	"github.com/cosmos/cosmos-sdk/x/bank"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/libs/cli"
 	"github.com/tendermint/tendermint/libs/log"
 	tmtypes "github.com/tendermint/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/bitsongofficial/go-bitsong/app"
-	"github.com/bitsongofficial/go-bitsong/types/util"
-
 	"github.com/cosmos/cosmos-sdk/baseapp"
+	"github.com/cosmos/cosmos-sdk/client/debug"
+	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/server"
+	"github.com/cosmos/cosmos-sdk/std"
 	"github.com/cosmos/cosmos-sdk/store"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/bank"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 	"github.com/cosmos/cosmos-sdk/x/staking"
+
+	"github.com/bitsongofficial/go-bitsong/app"
 )
 
-// bitsongd custom flags
 const flagInvCheckPeriod = "inv-check-period"
 
 var invCheckPeriod uint
 
 func main() {
-	cdc := codecstd.MakeCodec(app.ModuleBasics)
-	appCodec := codecstd.NewAppCodec(cdc)
+	cdc := std.MakeCodec(app.ModuleBasics)
+	appCodec := std.NewAppCodec(cdc)
 
-	// Initialize the app overriding the various methods we want to customize
+	// BitSong initializer
 	app.Init()
 
 	config := sdk.GetConfig()
-	config.SetBech32PrefixForAccount(util.Bech32PrefixAccAddr, util.Bech32PrefixAccPub)
-	config.SetBech32PrefixForValidator(util.Bech32PrefixValAddr, util.Bech32PrefixValPub)
-	config.SetBech32PrefixForConsensusNode(util.Bech32PrefixConsAddr, util.Bech32PrefixConsPub)
+	config.SetBech32PrefixForAccount(types.Bech32PrefixAccAddr, types.Bech32PrefixAccPub)
+	config.SetBech32PrefixForValidator(types.Bech32PrefixValAddr, types.Bech32PrefixValPub)
+	config.SetBech32PrefixForConsensusNode(types.Bech32PrefixConsAddr, types.Bech32PrefixConsPub)
 	config.Seal()
 
 	ctx := server.NewDefaultContext()
 	cobra.EnableCommandSorting = false
 	rootCmd := &cobra.Command{
 		Use:               "bitsongd",
-		Short:             "Bitsong Daemon (server)",
+		Short:             "Gaia Daemon (server)",
 		PersistentPreRunE: server.PersistentPreRunEFn(ctx),
 	}
 
@@ -67,11 +66,12 @@ func main() {
 	rootCmd.AddCommand(flags.NewCompletionCmd(rootCmd, true))
 	rootCmd.AddCommand(testnetCmd(ctx, cdc, app.ModuleBasics, bank.GenesisBalancesIterator{}))
 	rootCmd.AddCommand(replayCmd())
+	rootCmd.AddCommand(debug.Cmd(cdc))
 
 	server.AddCommands(ctx, cdc, rootCmd, newApp, exportAppStateAndTMValidators)
 
 	// prepare and add flags
-	executor := cli.PrepareBaseCmd(rootCmd, "BS", app.DefaultNodeHome)
+	executor := cli.PrepareBaseCmd(rootCmd, "GA", app.DefaultNodeHome)
 	rootCmd.PersistentFlags().UintVar(&invCheckPeriod, flagInvCheckPeriod,
 		0, "Assert registered invariants every N blocks")
 	err := executor.Execute()
@@ -92,8 +92,8 @@ func newApp(logger log.Logger, db dbm.DB, traceStore io.Writer) abci.Application
 		skipUpgradeHeights[int64(h)] = true
 	}
 
-	return app.NewBitsongApp(
-		logger, db, traceStore, true, invCheckPeriod,
+	return app.NewGoBitsong(
+		logger, db, traceStore, true, invCheckPeriod, skipUpgradeHeights,
 		viper.GetString(flags.FlagHome),
 		baseapp.SetPruning(store.NewPruningOptionsFromString(viper.GetString("pruning"))),
 		baseapp.SetMinGasPrices(viper.GetString(server.FlagMinGasPrices)),
@@ -108,13 +108,15 @@ func exportAppStateAndTMValidators(
 ) (json.RawMessage, []tmtypes.GenesisValidator, *abci.ConsensusParams, error) {
 
 	if height != -1 {
-		gApp := app.NewBitsongApp(logger, db, traceStore, false, uint(1), "")
-		err := gApp.LoadHeight(height)
+		gapp := app.NewGoBitsong(logger, db, traceStore, false, uint(1), map[int64]bool{}, "")
+		err := gapp.LoadHeight(height)
 		if err != nil {
 			return nil, nil, nil, err
 		}
-		return gApp.ExportAppStateAndValidators(forZeroHeight, jailWhiteList)
+
+		return gapp.ExportAppStateAndValidators(forZeroHeight, jailWhiteList)
 	}
-	gApp := app.NewBitsongApp(logger, db, traceStore, true, uint(1), "")
-	return gApp.ExportAppStateAndValidators(forZeroHeight, jailWhiteList)
+
+	gapp := app.NewGoBitsong(logger, db, traceStore, true, uint(1), map[int64]bool{}, "")
+	return gapp.ExportAppStateAndValidators(forZeroHeight, jailWhiteList)
 }

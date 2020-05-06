@@ -10,20 +10,10 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/bitsongofficial/go-bitsong/app"
-	"github.com/cosmos/cosmos-sdk/crypto/keyring"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
-	tmconfig "github.com/tendermint/tendermint/config"
-	"github.com/tendermint/tendermint/crypto"
-	tmos "github.com/tendermint/tendermint/libs/os"
-	tmrand "github.com/tendermint/tendermint/libs/rand"
-	"github.com/tendermint/tendermint/types"
-	tmtime "github.com/tendermint/tendermint/types/time"
-
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	clientkeys "github.com/cosmos/cosmos-sdk/client/keys"
 	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	"github.com/cosmos/cosmos-sdk/server"
 	srvconfig "github.com/cosmos/cosmos-sdk/server/config"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -33,6 +23,18 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	"github.com/cosmos/cosmos-sdk/x/staking"
+
+	tmconfig "github.com/tendermint/tendermint/config"
+	"github.com/tendermint/tendermint/crypto"
+	tmos "github.com/tendermint/tendermint/libs/os"
+	tmrand "github.com/tendermint/tendermint/libs/rand"
+	"github.com/tendermint/tendermint/types"
+	tmtime "github.com/tendermint/tendermint/types/time"
+
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+
+	btsg "github.com/bitsongofficial/go-bitsong/types"
 )
 
 var (
@@ -51,7 +53,7 @@ func testnetCmd(ctx *server.Context, cdc *codec.Codec,
 
 	cmd := &cobra.Command{
 		Use:   "testnet",
-		Short: "Initialize files for a Bitsongd testnet",
+		Short: "Initialize files for a bitsongd testnet",
 		Long: `testnet will create "v" number of directories and populate each with
 necessary files (private validator, genesis, config, etc.).
 
@@ -61,8 +63,6 @@ Example:
 	bitsongd testnet --v 4 --output-dir ./output --starting-ip-address 192.168.10.2
 	`,
 		RunE: func(cmd *cobra.Command, _ []string) error {
-			app.Init()
-
 			config := ctx.Config
 
 			outputDir := viper.GetString(flagOutputDir)
@@ -94,7 +94,7 @@ Example:
 	cmd.Flags().String(
 		flags.FlagChainID, "", "genesis file chain-id, if left blank will be randomly created")
 	cmd.Flags().String(
-		server.FlagMinGasPrices, fmt.Sprintf("0.000006%s", sdk.DefaultBondDenom),
+		server.FlagMinGasPrices, fmt.Sprintf("0.000006%s", btsg.BondDenom),
 		"Minimum gas prices to accept for transactions; All fees in a tx must meet this minimum (e.g. 0.01photino,0.001stake)")
 	cmd.Flags().String(flags.FlagKeyringBackend, flags.DefaultKeyringBackend, "Select keyring's backend (os|file|test)")
 
@@ -201,7 +201,7 @@ func InitTestnet(
 		accStakingTokens := sdk.TokensFromConsensusPower(500)
 		coins := sdk.Coins{
 			sdk.NewCoin(fmt.Sprintf("%stoken", nodeDirName), accTokens),
-			sdk.NewCoin(sdk.DefaultBondDenom, accStakingTokens),
+			sdk.NewCoin(btsg.BondDenom, accStakingTokens),
 		}
 
 		genBalances = append(genBalances, bank.Balance{Address: addr, Coins: coins.Sort()})
@@ -211,7 +211,7 @@ func InitTestnet(
 		msg := staking.NewMsgCreateValidator(
 			sdk.ValAddress(addr),
 			valPubKeys[i],
-			sdk.NewCoin(sdk.DefaultBondDenom, valTokens),
+			sdk.NewCoin(btsg.BondDenom, valTokens),
 			staking.NewDescription(nodeDirName, "", "", "", ""),
 			staking.NewCommissionRates(sdk.OneDec(), sdk.OneDec(), sdk.OneDec()),
 			sdk.OneInt(),
@@ -238,8 +238,10 @@ func InitTestnet(
 			return err
 		}
 
-		configFilePath := filepath.Join(nodeDir, "config/config.toml")
-		srvconfig.WriteConfigFile(configFilePath, gaiaConfig)
+		// TODO: Rename config file to server.toml as it's not particular to Gaia
+		// (REF: https://github.com/cosmos/cosmos-sdk/issues/4125).
+		gaiaConfigFilePath := filepath.Join(nodeDir, "config/bitsongd.toml")
+		srvconfig.WriteConfigFile(gaiaConfigFilePath, gaiaConfig)
 	}
 
 	if err := initGenFiles(cdc, mbm, chainID, genAccounts, genBalances, genFiles, numValidators); err != nil {

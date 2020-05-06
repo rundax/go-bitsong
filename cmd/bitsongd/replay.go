@@ -94,8 +94,8 @@ func replayTxs(rootDir string) error {
 
 	// Application
 	fmt.Fprintln(os.Stderr, "Creating application")
-	gapp := app.NewBitsongApp(
-		ctx.Logger, appDB, traceStoreWriter, true, uint(1), "",
+	gapp := app.NewGoBitsong(
+		ctx.Logger, appDB, traceStoreWriter, true, uint(1), map[int64]bool{}, "",
 		baseapp.SetPruning(store.PruneEverything), // nothing
 	)
 

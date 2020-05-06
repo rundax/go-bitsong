@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/libs/log"
-	"github.com/tendermint/tm-db"
+	db "github.com/tendermint/tm-db"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/simapp"
@@ -14,31 +14,36 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 )
 
-func TestBitsongdExport(t *testing.T) {
+func TestbitsongdExport(t *testing.T) {
 	db := db.NewMemDB()
-	bapp := NewBitsongApp(log.NewTMLogger(log.NewSyncWriter(os.Stdout)), db, nil, true, 0, "")
-	setGenesis(bapp)
+	gapp := NewGoBitsong(log.NewTMLogger(log.NewSyncWriter(os.Stdout)), db, nil, true, 0, map[int64]bool{}, "")
+	err := setGenesis(gapp)
+	require.NoError(t, err)
 
 	// Making a new app object with the db, so that initchain hasn't been called
-	newBapp := NewBitsongApp(log.NewTMLogger(log.NewSyncWriter(os.Stdout)), db, nil, true, 0, "")
-	_, _, err := newBapp.ExportAppStateAndValidators(false, []string{})
+	newGapp := NewGoBitsong(log.NewTMLogger(log.NewSyncWriter(os.Stdout)), db, nil, true, 0, map[int64]bool{}, "")
+	_, _, _, err = newGapp.ExportAppStateAndValidators(false, []string{})
 	require.NoError(t, err, "ExportAppStateAndValidators should not have an error")
 }
 
 // ensure that black listed addresses are properly set in bank keeper
 func TestBlackListedAddrs(t *testing.T) {
 	db := db.NewMemDB()
-	app := NewBitsongApp(log.NewTMLogger(log.NewSyncWriter(os.Stdout)), db, nil, true, 0, "")
+	app := NewGoBitsong(log.NewTMLogger(log.NewSyncWriter(os.Stdout)), db, nil, true, 0, map[int64]bool{}, "")
 
 	for acc := range maccPerms {
-		require.True(t, app.bankKeeper.BlacklistedAddr(app.supplyKeeper.GetModuleAddress(acc)))
+		require.Equal(t, !allowedReceivingModAcc[acc], app.bankKeeper.BlacklistedAddr(app.accountKeeper.GetModuleAddress(acc)))
 	}
 }
 
-func setGenesis(gapp *GoBitsong) error {
+func TestGetMaccPerms(t *testing.T) {
+	dup := GetMaccPerms()
+	require.Equal(t, maccPerms, dup, "duplicated module account permissions differed from actual module account permissions")
+}
 
+func setGenesis(gapp *GoBitsong) error {
 	genesisState := simapp.NewDefaultGenesisState()
-	stateBytes, err := codec.MarshalJSONIndent(gapp.cdc, genesisState)
+	stateBytes, err := codec.MarshalJSONIndent(gapp.Codec(), genesisState)
 	if err != nil {
 		return err
 	}
@@ -50,6 +55,7 @@ func setGenesis(gapp *GoBitsong) error {
 			AppStateBytes: stateBytes,
 		},
 	)
+
 	gapp.Commit()
 	return nil
 }

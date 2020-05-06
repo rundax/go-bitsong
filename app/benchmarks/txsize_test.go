@@ -5,18 +5,20 @@ import (
 
 	"github.com/tendermint/tendermint/crypto/secp256k1"
 
-	"github.com/bitsongofficial/go-bitsong/app"
-
+	"github.com/cosmos/cosmos-sdk/std"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/bank"
+
+	"github.com/bitsongofficial/go-bitsong/app"
 )
 
 // This will fail half the time with the second output being 173
 // This is due to secp256k1 signatures not being constant size.
 // nolint: vet
 func ExampleTxSendSize() {
-	cdc := app.MakeCodec()
+	cdc := std.MakeCodec(app.ModuleBasics)
+
 	var gas uint64 = 1
 
 	priv1 := secp256k1.GenPrivKeySecp256k1([]byte{0})
@@ -31,7 +33,10 @@ func ExampleTxSendSize() {
 	fee := auth.NewStdFee(gas, coins)
 	signBytes := auth.StdSignBytes("example-chain-ID",
 		1, 1, fee, []sdk.Msg{msg1}, "")
-	sig, _ := priv1.Sign(signBytes)
+	sig, err := priv1.Sign(signBytes)
+	if err != nil {
+		return
+	}
 	sigs := []auth.StdSignature{{nil, sig}}
 	tx := auth.NewStdTx([]sdk.Msg{msg1}, fee, sigs, "")
 	fmt.Println(len(cdc.MustMarshalBinaryBare([]sdk.Msg{msg1})))

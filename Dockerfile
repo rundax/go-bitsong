@@ -1,7 +1,7 @@
 # Simple usage with a mounted data directory:
-# > docker build -t bitsong .
-# > docker run -it -p 46657:46657 -p 46656:46656 -v ~/.bitsongd:/root/.bitsongd -v ~/.bitsongcli:/root/.bitsongcli bitsong bitsongd init
-# > docker run -it -p 46657:46657 -p 46656:46656 -v ~/.bitsongd:/root/.bitsongd -v ~/.bitsongcli:/root/.bitsongcli bitsong bitsongd start
+# > docker build -t gaia .
+# > docker run -it -p 46657:46657 -p 46656:46656 -v ~/.bitsongd:/root/.bitsongd -v ~/.bitsongcli:/root/.bitsongcli gaia bitsongd init
+# > docker run -it -p 46657:46657 -p 46656:46656 -v ~/.bitsongd:/root/.bitsongd -v ~/.bitsongcli:/root/.bitsongcli gaia bitsongd start
 FROM golang:alpine AS build-env
 
 # Set up dependencies

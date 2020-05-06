@@ -2,39 +2,36 @@ package main
 
 import (
 	"fmt"
-	codecstd "github.com/cosmos/cosmos-sdk/codec/std"
-	authclient "github.com/cosmos/cosmos-sdk/x/auth/client"
-
-	"github.com/bitsongofficial/go-bitsong/types/util"
-	"github.com/cosmos/cosmos-sdk/client/flags"
-
+	"github.com/bitsongofficial/go-bitsong/types"
 	"os"
 	"path"
 
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+	"github.com/tendermint/go-amino"
+	"github.com/tendermint/tendermint/libs/cli"
+
 	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/keys"
 	"github.com/cosmos/cosmos-sdk/client/lcd"
 	"github.com/cosmos/cosmos-sdk/client/rpc"
+	"github.com/cosmos/cosmos-sdk/std"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/auth"
+	authclient "github.com/cosmos/cosmos-sdk/x/auth/client"
 	authcmd "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
 	authrest "github.com/cosmos/cosmos-sdk/x/auth/client/rest"
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	bankcmd "github.com/cosmos/cosmos-sdk/x/bank/client/cli"
 
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
-
-	"github.com/tendermint/go-amino"
-	"github.com/tendermint/tendermint/libs/cli"
-
 	"github.com/bitsongofficial/go-bitsong/app"
 )
 
 var (
-	cdc      = codecstd.MakeCodec(app.ModuleBasics)
-	appCodec = codecstd.NewAppCodec(cdc)
+	cdc      = std.MakeCodec(app.ModuleBasics)
+	appCodec = std.NewAppCodec(cdc)
 )
 
 func init() {
@@ -42,14 +39,17 @@ func init() {
 }
 
 func main() {
+	// BitSong initializer
+	app.Init()
+
 	// Configure cobra to sort commands
 	cobra.EnableCommandSorting = false
 
 	// Read in the configuration file for the sdk
 	config := sdk.GetConfig()
-	config.SetBech32PrefixForAccount(util.Bech32PrefixAccAddr, util.Bech32PrefixAccPub)
-	config.SetBech32PrefixForValidator(util.Bech32PrefixValAddr, util.Bech32PrefixValPub)
-	config.SetBech32PrefixForConsensusNode(util.Bech32PrefixConsAddr, util.Bech32PrefixConsPub)
+	config.SetBech32PrefixForAccount(types.Bech32PrefixAccAddr, types.Bech32PrefixAccPub)
+	config.SetBech32PrefixForValidator(types.Bech32PrefixValAddr, types.Bech32PrefixValPub)
+	config.SetBech32PrefixForConsensusNode(types.Bech32PrefixConsAddr, types.Bech32PrefixConsPub)
 	config.Seal()
 
 	// TODO: setup keybase, viper object, etc. to be passed into
@@ -94,9 +94,12 @@ func main() {
 
 func queryCmd(cdc *amino.Codec) *cobra.Command {
 	queryCmd := &cobra.Command{
-		Use:     "query",
-		Aliases: []string{"q"},
-		Short:   "Querying subcommands",
+		Use:                        "query",
+		Aliases:                    []string{"q"},
+		Short:                      "Querying subcommands",
+		DisableFlagParsing:         true,
+		SuggestionsMinimumDistance: 2,
+		RunE:                       client.ValidateCmd,
 	}
 
 	queryCmd.AddCommand(
@@ -117,8 +120,11 @@ func queryCmd(cdc *amino.Codec) *cobra.Command {
 
 func txCmd(cdc *amino.Codec) *cobra.Command {
 	txCmd := &cobra.Command{
-		Use:   "tx",
-		Short: "Transactions subcommands",
+		Use:                        "tx",
+		Short:                      "Transactions subcommands",
+		DisableFlagParsing:         true,
+		SuggestionsMinimumDistance: 2,
+		RunE:                       client.ValidateCmd,
 	}
 
 	txCmd.AddCommand(
@@ -129,6 +135,7 @@ func txCmd(cdc *amino.Codec) *cobra.Command {
 		flags.LineBreak,
 		authcmd.GetBroadcastCommand(cdc),
 		authcmd.GetEncodeCommand(cdc),
+		authcmd.GetDecodeCommand(cdc),
 		flags.LineBreak,
 	)
 

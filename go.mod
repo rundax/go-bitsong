@@ -1,12 +1,14 @@
 module github.com/bitsongofficial/go-bitsong
 
-go 1.13
+go 1.14
 
 require (
-	github.com/cosmos/cosmos-sdk v0.34.4-0.20200422222342-f6e9ee762358
-	github.com/desmos-labs/desmos v0.3.1-0.20200428123354-a5020af910b9
-	github.com/gorilla/mux v1.7.4
+	github.com/cosmos/cosmos-sdk v0.34.4-0.20200502230752-7557f0eda346
+	github.com/onsi/ginkgo v1.8.0 // indirect
+	github.com/onsi/gomega v1.5.0 // indirect
 	github.com/otiai10/copy v1.1.1
+	github.com/pkg/errors v0.9.1
+	github.com/snikch/goodman v0.0.0-20171125024755-10e37e294daa
 	github.com/spf13/cobra v1.0.0
 	github.com/spf13/viper v1.6.3
 	github.com/stretchr/testify v1.5.1
