@@ -7,19 +7,19 @@ governance process.
 
    ```bash
    # start a gaia application full-node
-   $ bitsongd start
+   $ gaiad start
 
    # set up the cli config
-   $ bitsongcli config trust-node true
-   $ bitsongcli config chain-id testing
+   $ gaiacli config trust-node true
+   $ gaiacli config chain-id testing
 
    # create an upgrade governance proposal
-   $ bitsongcli tx gov submit-proposal software-upgrade <plan-name> \
+   $ gaiacli tx gov submit-proposal software-upgrade <plan-name> \
    --title <proposal-title> --description <proposal-description> \
    --from <name-or-key> --upgrade-height <desired-upgrade-height> --deposit 10000000stake
 
    # once the proposal passes you can query the pending plan
-   $ bitsongcli query upgrade plan
+   $ gaiacli query upgrade plan
    ```
 
 2. Performing an upgrade
@@ -39,7 +39,7 @@ governance process.
    ```
 
    Note that the process will hang indefinitely (doesn't exit to avoid restart loops). So, you must
-   manually kill the process and replace it with a new binary. Do so now with `Ctrl+C` or `killall bitsongd`.
+   manually kill the process and replace it with a new binary. Do so now with `Ctrl+C` or `killall gaiad`.
 
    In `gaia/app/app.go`, after `upgrade.Keeper` is initialized and set in the app, set the the
    corresponding upgrade `Handler` with the correct `<plan-name>`:
@@ -64,11 +64,11 @@ governance process.
    # Restart the chain using the new binary. You should see the chain resume from
    # the upgrade height:
    # `I[2019-11-05|12:48:15.184] applying upgrade <plan-name> at height: <desired-upgrade-height>      module=main`
-   $ bitsongd start
+   $ gaiad start
 
    # verify there is no pending plan
-   $ bitsongcli query upgrade plan
+   $ gaiacli query upgrade plan
 
    # verify you can query the block header of the completed upgrade
-   $ bitsongcli query upgrade applied <plan-name>
+   $ gaiacli query upgrade applied <plan-name>
    ```

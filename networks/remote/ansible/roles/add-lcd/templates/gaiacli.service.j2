@@ -1,14 +1,14 @@
 [Unit]
-Description=bitsongcli
+Description=gaiacli
 Requires=network-online.target
 After=network-online.target
 
 [Service]
 Restart=on-failure
-User=bitsongd
-Group=bitsongd
+User=gaiad
+Group=gaiad
 PermissionsStartOnly=true
-ExecStart=/usr/bin/bitsongcli rest-server --laddr {{bitsongcli_ADDRESS}}
+ExecStart=/usr/bin/gaiacli rest-server --laddr {{GAIACLI_ADDRESS}}
 ExecReload=/bin/kill -HUP $MAINPID
 KillSignal=SIGTERM
 

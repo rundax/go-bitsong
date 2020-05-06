@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/bitsongofficial/go-bitsong/types"
 	"io"
 
 	"github.com/spf13/cobra"
@@ -25,6 +24,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking"
 
 	"github.com/bitsongofficial/go-bitsong/app"
+	btsg "github.com/bitsongofficial/go-bitsong/types"
 )
 
 const flagInvCheckPeriod = "inv-check-period"
@@ -35,20 +35,17 @@ func main() {
 	cdc := std.MakeCodec(app.ModuleBasics)
 	appCodec := std.NewAppCodec(cdc)
 
-	// BitSong initializer
-	app.Init()
-
 	config := sdk.GetConfig()
-	config.SetBech32PrefixForAccount(types.Bech32PrefixAccAddr, types.Bech32PrefixAccPub)
-	config.SetBech32PrefixForValidator(types.Bech32PrefixValAddr, types.Bech32PrefixValPub)
-	config.SetBech32PrefixForConsensusNode(types.Bech32PrefixConsAddr, types.Bech32PrefixConsPub)
+	config.SetBech32PrefixForAccount(btsg.Bech32PrefixAccAddr, btsg.Bech32PrefixAccPub)
+	config.SetBech32PrefixForValidator(btsg.Bech32PrefixValAddr, btsg.Bech32PrefixValPub)
+	config.SetBech32PrefixForConsensusNode(btsg.Bech32PrefixConsAddr, btsg.Bech32PrefixConsPub)
 	config.Seal()
 
 	ctx := server.NewDefaultContext()
 	cobra.EnableCommandSorting = false
 	rootCmd := &cobra.Command{
 		Use:               "bitsongd",
-		Short:             "Gaia Daemon (server)",
+		Short:             "Bitsong Daemon (server)",
 		PersistentPreRunE: server.PersistentPreRunEFn(ctx),
 	}
 
@@ -92,7 +89,7 @@ func newApp(logger log.Logger, db dbm.DB, traceStore io.Writer) abci.Application
 		skipUpgradeHeights[int64(h)] = true
 	}
 
-	return app.NewGoBitsong(
+	return app.NewGaiaApp(
 		logger, db, traceStore, true, invCheckPeriod, skipUpgradeHeights,
 		viper.GetString(flags.FlagHome),
 		baseapp.SetPruning(store.NewPruningOptionsFromString(viper.GetString("pruning"))),
@@ -108,7 +105,7 @@ func exportAppStateAndTMValidators(
 ) (json.RawMessage, []tmtypes.GenesisValidator, *abci.ConsensusParams, error) {
 
 	if height != -1 {
-		gapp := app.NewGoBitsong(logger, db, traceStore, false, uint(1), map[int64]bool{}, "")
+		gapp := app.NewGaiaApp(logger, db, traceStore, false, uint(1), map[int64]bool{}, "")
 		err := gapp.LoadHeight(height)
 		if err != nil {
 			return nil, nil, nil, err
@@ -117,6 +114,6 @@ func exportAppStateAndTMValidators(
 		return gapp.ExportAppStateAndValidators(forZeroHeight, jailWhiteList)
 	}
 
-	gapp := app.NewGoBitsong(logger, db, traceStore, true, uint(1), map[int64]bool{}, "")
+	gapp := app.NewGaiaApp(logger, db, traceStore, true, uint(1), map[int64]bool{}, "")
 	return gapp.ExportAppStateAndValidators(forZeroHeight, jailWhiteList)
 }

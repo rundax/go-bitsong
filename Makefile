@@ -48,7 +48,7 @@ build_tags_comma_sep := $(subst $(whitespace),$(comma),$(build_tags))
 
 # process linker flags
 
-ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=gobitsong \
+ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=go-bitsong \
 		  -X github.com/cosmos/cosmos-sdk/version.ServerName=bitsongd \
 		  -X github.com/cosmos/cosmos-sdk/version.ClientName=bitsongcli \
 		  -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
@@ -186,12 +186,12 @@ format:
 ###                                Localnet                                 ###
 ###############################################################################
 
-build-docker-bitsongdnode:
+build-docker-gaiadnode:
 	$(MAKE) -C networks/local
 
 # Run a 4-node testnet locally
 localnet-start: build-linux localnet-stop
-	@if ! [ -f build/node0/bitsongd/config/genesis.json ]; then docker run --rm -v $(CURDIR)/build:/bitsongd:Z tendermint/bitsongdnode testnet --v 4 -o . --starting-ip-address 192.168.10.2 --keyring-backend=test ; fi
+	@if ! [ -f build/node0/gaiad/config/genesis.json ]; then docker run --rm -v $(CURDIR)/build:/gaiad:Z tendermint/gaiadnode testnet --v 4 -o . --starting-ip-address 192.168.10.2 --keyring-backend=test ; fi
 	docker-compose up -d
 
 # Stop testnet
@@ -203,11 +203,11 @@ setup-contract-tests-data:
 	rm -rf /tmp/contract_tests ; \
 	mkdir /tmp/contract_tests ; \
 	cp "${GOPATH}/pkg/mod/${SDK_PACK}/client/lcd/swagger-ui/swagger.yaml" /tmp/contract_tests/swagger.yaml ; \
-	./build/bitsongd init --home /tmp/contract_tests/.bitsongd --chain-id lcd contract-tests ; \
+	./build/gaiad init --home /tmp/contract_tests/.gaiad --chain-id lcd contract-tests ; \
 	tar -xzf lcd_test/testdata/state.tar.gz -C /tmp/contract_tests/
 
 start-gaia: setup-contract-tests-data
-	./build/bitsongd --home /tmp/contract_tests/.bitsongd start &
+	./build/gaiad --home /tmp/contract_tests/.gaiad start &
 	@sleep 2s
 
 setup-transactions: start-gaia
@@ -215,11 +215,11 @@ setup-transactions: start-gaia
 
 run-lcd-contract-tests:
 	@echo "Running Gaia LCD for contract tests"
-	./build/bitsongcli rest-server --laddr tcp://0.0.0.0:8080 --home /tmp/contract_tests/.bitsongcli --node http://localhost:26657 --chain-id lcd --trust-node true
+	./build/gaiacli rest-server --laddr tcp://0.0.0.0:8080 --home /tmp/contract_tests/.gaiacli --node http://localhost:26657 --chain-id lcd --trust-node true
 
 contract-tests: setup-transactions
 	@echo "Running Gaia LCD for contract tests"
-	dredd && pkill bitsongd
+	dredd && pkill gaiad
 
 test-docker:
 	@docker build -f contrib/Dockerfile.test -t ${TEST_DOCKER_REPO}:$(shell git rev-parse --short HEAD) .
@@ -236,5 +236,5 @@ test-docker-push: test-docker
 	setup-transactions setup-contract-tests-data start-gaia run-lcd-contract-tests contract-tests \
 	test test-all test-build test-cover test-unit test-race \
 	benchmark \
-	build-docker-bitsongdnode localnet-start localnet-stop \
+	build-docker-gaiadnode localnet-start localnet-stop \
 	docker-single-node

@@ -39,7 +39,7 @@ import (
 	upgradeclient "github.com/cosmos/cosmos-sdk/x/upgrade/client"
 )
 
-const appName = "GoBitsong"
+const appName = "GaiaApp"
 
 var (
 	// DefaultCLIHome default home directories for bitsongcli
@@ -89,10 +89,10 @@ var (
 )
 
 // Verify app interface at compile time
-var _ simapp.App = (*GoBitsong)(nil)
+var _ simapp.App = (*GaiaApp)(nil)
 
-// GoBitsong extended ABCI application
-type GoBitsong struct {
+// GaiaApp extended ABCI application
+type GaiaApp struct {
 	*baseapp.BaseApp
 	cdc *codec.Codec
 
@@ -133,12 +133,12 @@ type GoBitsong struct {
 	sm *module.SimulationManager
 }
 
-// NewGoBitsong returns a reference to an initialized GoBitsong.
-func NewGoBitsong(
+// NewGaiaApp returns a reference to an initialized GaiaApp.
+func NewGaiaApp(
 	logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool,
 	invCheckPeriod uint, skipUpgradeHeights map[int64]bool, home string,
 	baseAppOptions ...func(*baseapp.BaseApp),
-) *GoBitsong {
+) *GaiaApp {
 
 	// TODO: Remove cdc in favor of appCodec once all modules are migrated.
 	cdc := std.MakeCodec(ModuleBasics)
@@ -157,7 +157,7 @@ func NewGoBitsong(
 	tkeys := sdk.NewTransientStoreKeys(params.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capability.MemStoreKey)
 
-	app := &GoBitsong{
+	app := &GaiaApp{
 		BaseApp:        bApp,
 		cdc:            cdc,
 		invCheckPeriod: invCheckPeriod,
@@ -357,32 +357,32 @@ func NewGoBitsong(
 }
 
 // Name returns the name of the App
-func (app *GoBitsong) Name() string { return app.BaseApp.Name() }
+func (app *GaiaApp) Name() string { return app.BaseApp.Name() }
 
 // BeginBlocker application updates every begin block
-func (app *GoBitsong) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock {
+func (app *GaiaApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock {
 	return app.mm.BeginBlock(ctx, req)
 }
 
 // EndBlocker application updates every end block
-func (app *GoBitsong) EndBlocker(ctx sdk.Context, req abci.RequestEndBlock) abci.ResponseEndBlock {
+func (app *GaiaApp) EndBlocker(ctx sdk.Context, req abci.RequestEndBlock) abci.ResponseEndBlock {
 	return app.mm.EndBlock(ctx, req)
 }
 
 // InitChainer application update at chain initialization
-func (app *GoBitsong) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.ResponseInitChain {
+func (app *GaiaApp) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.ResponseInitChain {
 	var genesisState simapp.GenesisState
 	app.cdc.MustUnmarshalJSON(req.AppStateBytes, &genesisState)
 	return app.mm.InitGenesis(ctx, app.cdc, genesisState)
 }
 
 // LoadHeight loads a particular height
-func (app *GoBitsong) LoadHeight(height int64) error {
+func (app *GaiaApp) LoadHeight(height int64) error {
 	return app.LoadVersion(height)
 }
 
 // ModuleAccountAddrs returns all the app's module account addresses.
-func (app *GoBitsong) ModuleAccountAddrs() map[string]bool {
+func (app *GaiaApp) ModuleAccountAddrs() map[string]bool {
 	modAccAddrs := make(map[string]bool)
 	for acc := range maccPerms {
 		modAccAddrs[auth.NewModuleAddress(acc).String()] = true
@@ -392,7 +392,7 @@ func (app *GoBitsong) ModuleAccountAddrs() map[string]bool {
 }
 
 // BlacklistedAccAddrs returns all the app's module account addresses black listed for receiving tokens.
-func (app *GoBitsong) BlacklistedAccAddrs() map[string]bool {
+func (app *GaiaApp) BlacklistedAccAddrs() map[string]bool {
 	blacklistedAddrs := make(map[string]bool)
 	for acc := range maccPerms {
 		blacklistedAddrs[auth.NewModuleAddress(acc).String()] = !allowedReceivingModAcc[acc]
@@ -401,16 +401,16 @@ func (app *GoBitsong) BlacklistedAccAddrs() map[string]bool {
 	return blacklistedAddrs
 }
 
-// Codec returns GoBitsong's codec.
+// Codec returns GaiaApp's codec.
 //
 // NOTE: This is solely to be used for testing purposes as it may be desirable
 // for modules to register their own custom testing types.
-func (app *GoBitsong) Codec() *codec.Codec {
+func (app *GaiaApp) Codec() *codec.Codec {
 	return app.cdc
 }
 
 // SimulationManager implements the SimulationApp interface
-func (app *GoBitsong) SimulationManager() *module.SimulationManager {
+func (app *GaiaApp) SimulationManager() *module.SimulationManager {
 	return app.sm
 }
 

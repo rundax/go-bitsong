@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/bitsongofficial/go-bitsong/types"
+	btsg "github.com/bitsongofficial/go-bitsong/types"
 	"os"
 	"path"
 
@@ -39,17 +39,14 @@ func init() {
 }
 
 func main() {
-	// BitSong initializer
-	app.Init()
-
 	// Configure cobra to sort commands
 	cobra.EnableCommandSorting = false
 
 	// Read in the configuration file for the sdk
 	config := sdk.GetConfig()
-	config.SetBech32PrefixForAccount(types.Bech32PrefixAccAddr, types.Bech32PrefixAccPub)
-	config.SetBech32PrefixForValidator(types.Bech32PrefixValAddr, types.Bech32PrefixValPub)
-	config.SetBech32PrefixForConsensusNode(types.Bech32PrefixConsAddr, types.Bech32PrefixConsPub)
+	config.SetBech32PrefixForAccount(btsg.Bech32PrefixAccAddr, btsg.Bech32PrefixAccPub)
+	config.SetBech32PrefixForValidator(btsg.Bech32PrefixValAddr, btsg.Bech32PrefixValPub)
+	config.SetBech32PrefixForConsensusNode(btsg.Bech32PrefixConsAddr, btsg.Bech32PrefixConsPub)
 	config.Seal()
 
 	// TODO: setup keybase, viper object, etc. to be passed into

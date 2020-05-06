@@ -52,11 +52,11 @@ These block explorers allow you to search, view and analyze Cosmos Hub data&mdas
 
 ## Cosmos Hub CLI
 
-`bitsongcli` is a command-line interface that lets you interact with the Cosmos Hub. `bitsongcli` is the only tool that supports 100% of the Cosmos Hub features, including accounts, transfers, delegation, and governance. Learn more about `bitsongcli` with the [delegator's CLI guide](../delegators/delegator-guide-cli.md).
+`gaiacli` is a command-line interface that lets you interact with the Cosmos Hub. `gaiacli` is the only tool that supports 100% of the Cosmos Hub features, including accounts, transfers, delegation, and governance. Learn more about `gaiacli` with the [delegator's CLI guide](../delegators/delegator-guide-cli.md).
 
 ## Running a full-node on the Cosmos Hub Mainnet
 
-In order to run a full-node for the Cosmos Hub mainnet, you must first [install `bitsongd`](../gaia-tutorials/installation.md). Then, follow [the guide](../gaia-tutorials/join-mainnet.md).
+In order to run a full-node for the Cosmos Hub mainnet, you must first [install `gaiad`](../gaia-tutorials/installation.md). Then, follow [the guide](../gaia-tutorials/join-mainnet.md).
 
 If you are looking to run a validator node, follow the [validator setup guide](../validators/validator-setup.md).
 

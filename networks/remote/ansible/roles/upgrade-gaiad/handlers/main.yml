@@ -1,5 +1,5 @@
 ---
 
-- name: restart bitsongd
-  service: name=bitsongd state=restarted
+- name: restart gaiad
+  service: name=gaiad state=restarted
 

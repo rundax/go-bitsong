@@ -1,6 +1,6 @@
 # 部署你自己的测试网
 
-这篇文章介绍了三种创建`bitsongd`节点的测试网的方式，每种针对不同的使用场景：
+这篇文章介绍了三种创建`gaiad`节点的测试网的方式，每种针对不同的使用场景：
 
 1. 单节点，本地的，手动的测试网
 2. 多节点，本地的，自动的测试网
@@ -14,10 +14,10 @@
 
 如果你需要使用或部署 gaia 作为容器，你可以跳过`build`步骤并使用官方镜像，\$TAG 标识你感兴趣的版本：
 
-- `docker run -it -v ~/.bitsongd:/root/.bitsongd -v ~/.bitsongcli:/root/.bitsongcli tendermint:$TAG bitsongd init`
-- `docker run -it -p 26657:26657 -p 26656:26656 -v ~/.bitsongd:/root/.bitsongd -v ~/.bitsongcli:/root/.bitsongcli tendermint:$TAG bitsongd start`
+- `docker run -it -v ~/.gaiad:/root/.gaiad -v ~/.gaiacli:/root/.gaiacli tendermint:$TAG gaiad init`
+- `docker run -it -p 26657:26657 -p 26656:26656 -v ~/.gaiad:/root/.gaiad -v ~/.gaiacli:/root/.gaiacli tendermint:$TAG gaiad start`
 - ...
-- `docker run -it -v ~/.bitsongd:/root/.bitsongd -v ~/.bitsongcli:/root/.bitsongcli tendermint:$TAG bitsongcli version`
+- `docker run -it -v ~/.gaiad:/root/.gaiad -v ~/.gaiacli:/root/.gaiacli tendermint:$TAG gaiacli version`
 
 相同的镜像也可以用于构建你自己的 docker-compose 栈
 
@@ -37,27 +37,27 @@
 cd $HOME
 
 # Initialize the genesis.json file that will help you to bootstrap the network
-bitsongd init --chain-id=testing testing
+gaiad init --chain-id=testing testing
 
 # Create a key to hold your validator account
-bitsongcli keys add validator
+gaiacli keys add validator
 
 # Add that key into the genesis.app_state.accounts array in the genesis file
 # NOTE: this command lets you set the number of coins. Make sure this account has some coins
 # with the genesis.app_state.staking.params.bond_denom denom, the default is staking
-bitsongd add-genesis-account $(bitsongcli keys show validator -a) 1000000000stake,1000000000validatortoken
+gaiad add-genesis-account $(gaiacli keys show validator -a) 1000000000stake,1000000000validatortoken
 
 # Generate the transaction that creates your validator
-bitsongd gentx --name validator
+gaiad gentx --name validator
 
 # Add the generated bonding transaction to the genesis file
-bitsongd collect-gentxs
+gaiad collect-gentxs
 
-# Now its safe to start `bitsongd`
-bitsongd start
+# Now its safe to start `gaiad`
+gaiad start
 ```
 
-启动将会把`bitsongd`相关的所有数据放在`~/.bitsongd`目录。你可以检查所创建的 genesis 文件——`~/.bitsongd/config/genesis.json`。同时`bitsongcli`也已经配置完成并且有了一个拥有 token 的账户(stake 和自定义的代币)。
+启动将会把`gaiad`相关的所有数据放在`~/.gaiad`目录。你可以检查所创建的 genesis 文件——`~/.gaiad/config/genesis.json`。同时`gaiacli`也已经配置完成并且有了一个拥有 token 的账户(stake 和自定义的代币)。
 
 ## 多节点，本地的，自动的测试网
 
@@ -71,7 +71,7 @@ bitsongd start
 
 ### 编译
 
-编译`bitsongd`二进制文件(linux)和运行`localnet`命令所需的`tendermint/gaianode` docker images。这个二进制文件将被安装到 container 中，并且可以更新重建 image，因此您只需要构建一次 image。
+编译`gaiad`二进制文件(linux)和运行`localnet`命令所需的`tendermint/gaianode` docker images。这个二进制文件将被安装到 container 中，并且可以更新重建 image，因此您只需要构建一次 image。
 
 ```bash
 # Clone the gaia repo
@@ -83,8 +83,8 @@ cd cosmos-sdk
 # Build the linux binary in ./build
 make build-linux
 
-# Build tendermint/bitsongdnode image
-make build-docker-bitsongdnode
+# Build tendermint/gaiadnode image
+make build-docker-gaiadnode
 ```
 
 ### 运行你的测试网
@@ -95,7 +95,7 @@ make build-docker-bitsongdnode
 make localnet-start
 ```
 
-此命令使用 bitsongdnode image 创建了一个 4 节点网络。每个节点的端口可以在下表中找到：
+此命令使用 gaiadnode image 创建了一个 4 节点网络。每个节点的端口可以在下表中找到：
 
 | `Node ID`   | `P2P Port` | `RPC Port` |
 | ----------- | ---------- | ---------- |
@@ -112,71 +112,71 @@ make build-linux localnet-start
 
 ### 配置
 
-`make localnet-start`命令通过调用`bitsongd testnet`命令在`./build`中创建了一个 4 节点测试网络的文件。输出`./build`目录下一些文件:
+`make localnet-start`命令通过调用`gaiad testnet`命令在`./build`中创建了一个 4 节点测试网络的文件。输出`./build`目录下一些文件:
 
 ```bash
 $ tree -L 2 build/
 build/
-├── bitsongcli
-├── bitsongd
+├── gaiacli
+├── gaiad
 ├── gentxs
 │   ├── node0.json
 │   ├── node1.json
 │   ├── node2.json
 │   └── node3.json
 ├── node0
-│   ├── bitsongcli
+│   ├── gaiacli
 │   │   ├── key_seed.json
 │   │   └── keys
-│   └── bitsongd
-│       ├── ${LOG:-bitsongd.log}
+│   └── gaiad
+│       ├── ${LOG:-gaiad.log}
 │       ├── config
 │       └── data
 ├── node1
-│   ├── bitsongcli
+│   ├── gaiacli
 │   │   └── key_seed.json
-│   └── bitsongd
-│       ├── ${LOG:-bitsongd.log}
+│   └── gaiad
+│       ├── ${LOG:-gaiad.log}
 │       ├── config
 │       └── data
 ├── node2
-│   ├── bitsongcli
+│   ├── gaiacli
 │   │   └── key_seed.json
-│   └── bitsongd
-│       ├── ${LOG:-bitsongd.log}
+│   └── gaiad
+│       ├── ${LOG:-gaiad.log}
 │       ├── config
 │       └── data
 └── node3
-    ├── bitsongcli
+    ├── gaiacli
     │   └── key_seed.json
-    └── bitsongd
-        ├── ${LOG:-bitsongd.log}
+    └── gaiad
+        ├── ${LOG:-gaiad.log}
         ├── config
         └── data
 ```
 
-每个`./build/nodeN`目录被挂载到对应 container 的`/bitsongd`目录。
+每个`./build/nodeN`目录被挂载到对应 container 的`/gaiad`目录。
 
 ### 日志输出
 
-日志被保存在每个`./build/nodeN/bitsongd/gaia.log`文件中。你也可以直接通过 Docker 来查看日志：
+日志被保存在每个`./build/nodeN/gaiad/gaia.log`文件中。你也可以直接通过 Docker 来查看日志：
 
 ```bash
-docker logs -f bitsongdnode0
+docker logs -f gaiadnode0
 ```
 
 ### 密钥&账户
 
-你需要使用指定节点的`bitsongcli`目录作为你的`home`来同`bitsongcli`交互，并执行查询或者创建交易:
+你需要使用指定节点的`gaiacli`目录作为你的`home`来同`gaiacli`交互，并执行查询或者创建交易:
 
 ```bash
-bitsongcli keys list --home ./build/node0/bitsongcli
+gaiacli keys list --home ./build/node0/gaiacli
 ```
 
 现在账户已经存在了，你可以创建新的账户并向其发送资金！
 
 ::: 提示
-注意：每个节点的密钥种子放在`./build/nodeN/bitsongcli/key_seed.json`中，可以通过`bitsongcli keys add --restore`命令来回复。
+注意：每个节点的密钥种子放在`./build/nodeN/gaiacli/key_seed.json`中，可以通过`gaiacli keys add --restore`命令来回复。
 :::
 
 ### 特殊的可执行程序

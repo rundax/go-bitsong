@@ -28,22 +28,22 @@ Then, you can start [running a full-node](../gaia-tutorials/join-mainnet.md).
 
 ### Command-Line interface
 
-## Setting Up `bitsongcli`
+## Setting Up `gaiacli`
 
 ::: tip
-**Before setting up `bitsongcli`, make sure you have set up a way to [access the Cosmos Hub network](#accessing-the-cosmos-hub-network)**
+**Before setting up `gaiacli`, make sure you have set up a way to [access the Cosmos Hub network](#accessing-the-cosmos-hub-network)**
 :::
 
 ::: warning
-**Please check that you are always using the latest stable release of `bitsongcli`**
+**Please check that you are always using the latest stable release of `gaiacli`**
 :::
 
-`bitsongcli` is the tool that enables you to interact with the node that runs on the Cosmos Hub network, whether you run it yourself or not. Let us set it up properly.
+`gaiacli` is the tool that enables you to interact with the node that runs on the Cosmos Hub network, whether you run it yourself or not. Let us set it up properly.
 
-In order to set up `bitsongcli`, use the following command:
+In order to set up `gaiacli`, use the following command:
 
 ```bash
-bitsongcli config <flag> <value>
+gaiacli config <flag> <value>
 ```
 
 It allows you to set a default value for each given flag. 
@@ -51,9 +51,9 @@ It allows you to set a default value for each given flag.
 First, set up the address of the full-node you want to connect to:
 
 ```bash
-bitsongcli config node <host>:<port
+gaiacli config node <host>:<port
 
-// example: bitsongcli config node https://77.87.106.33:26657
+// example: gaiacli config node https://77.87.106.33:26657
 ```
 
 If you run your own full-node, just use `tcp://localhost:26657` as the address. 
@@ -61,7 +61,7 @@ If you run your own full-node, just use `tcp://localhost:26657` as the address.
 Then, let us set the default value of the `--trust-node` flag:
 
 ```bash
-bitsongcli config trust-node false
+gaiacli config trust-node false
 
 // Set to true if you run a light-client node, false otherwise
 ```
@@ -69,7 +69,7 @@ bitsongcli config trust-node false
 Finally, let us set the `chain-id` of the blockchain we want to interact with:
 
 ```bash
-bitsongcli config chain-id cosmoshub-2
+gaiacli config chain-id cosmoshub-2
 ```
 
 Next you will find a few useful CLI commands to interact with the Full-Node.
@@ -79,7 +79,7 @@ Next you will find a few useful CLI commands to interact with the Full-Node.
 To generate a new key (default secp256k1 elliptic curve):
 
 ```bash
-bitsongcli keys add <your_key_name>
+gaiacli keys add <your_key_name>
 ```
 
 You will be asked to create a password (at least 8 characters) for this key-pair. This will return the information listed below:
@@ -93,7 +93,7 @@ You will be asked to create a password (at least 8 characters) for this key-pair
 You can see all your available keys by typing:
 
 ```bash
-bitsongcli keys list
+gaiacli keys list
 ```
 
 #### Checking your balance
@@ -101,7 +101,7 @@ bitsongcli keys list
 After receiving tokens to your address, you can view your account's balance by typing:
 
 ```bash
-bitsongcli query account <YOUR_ADDRESS>
+gaiacli query account <YOUR_ADDRESS>
 ```
 
 *Note: When you query an account balance with zero tokens, you will get this error: No account with address <YOUR_ADDRESS> was found in the state. This is expected! We're working on improving our error messages.*
@@ -111,7 +111,7 @@ bitsongcli query account <YOUR_ADDRESS>
 Here is the command to send coins via the CLI:
 
 ```bash
-bitsongcli tx send <from_key_or_address> <to_address> <amount> \
+gaiacli tx send <from_key_or_address> <to_address> <amount> \
     --chain-id=<name_of_testnet_chain> 
 ```
 
@@ -130,7 +130,7 @@ Flags:
 If you need to do something else, the best command you can run is:
 
 ```bash
-bitsongcli 
+gaiacli 
 ```
 
 It will display all the available commands. For each command, you can use the `--help` flag to get further information. 
@@ -142,7 +142,7 @@ The Rest Server acts as an intermediary between the front-end and the full-node.
 To start the Rest server: 
 
 ```bash
-bitsongcli rest-server --node=<full_node_address:full_node_port>
+gaiacli rest-server --node=<full_node_address:full_node_port>
 ```
 
 Flags:
@@ -180,7 +180,7 @@ you need to use the field `generate_only` in the body of `base_req`.
 
 Cosmos SDK transaction signing is a fairly simple process.
 
-Every Cosmos SDK transaction has a canonical JSON representation. The `bitsongcli`
+Every Cosmos SDK transaction has a canonical JSON representation. The `gaiacli`
 and Stargate REST interfaces provide canonical JSON representations of transactions
 and their "broadcast" functions will provide compact Amino (a protobuf-like wire format)
 encoding translations.

@@ -1,14 +1,14 @@
 [Unit]
-Description=bitsongd
+Description=gaiad
 Requires=network-online.target
 After=network-online.target
 
 [Service]
 Restart=on-failure
-User=bitsongd
-Group=bitsongd
+User=gaiad
+Group=gaiad
 PermissionsStartOnly=true
-ExecStart=/usr/bin/bitsongd start
+ExecStart=/usr/bin/gaiad start
 ExecReload=/bin/kill -HUP $MAINPID
 KillSignal=SIGTERM
 

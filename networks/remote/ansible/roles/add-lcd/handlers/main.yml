@@ -1,9 +1,9 @@
 ---
 
 - name: systemctl
-  systemd: name=bitsongcli enabled=yes daemon_reload=yes
+  systemd: name=gaiacli enabled=yes daemon_reload=yes
 
-- name: restart bitsongcli
-  service: name=bitsongcli state=restarted
+- name: restart gaiacli
+  service: name=gaiacli state=restarted
 
 

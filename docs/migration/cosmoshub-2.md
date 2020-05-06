@@ -75,9 +75,9 @@ before resetting your validator.
 
 Prior to exporting `cosmoshub-2` state, validators are encouraged to take a full data snapshot at the
 export height before proceeding. Snapshotting depends heavily on infrastructure, but generally this
-can be done by backing up the `.bitsongcli` and `.bitsongd` directories.
+can be done by backing up the `.gaiacli` and `.gaiad` directories.
 
-It is critically important to back-up the `.bitsongd/data/priv_validator_state.json` file after stopping your bitsongd process. This file is updated every block as your validator participates in a consensus rounds. It is a critical file needed to prevent double-signing, in case the upgrade fails and the previous chain needs to be restarted.
+It is critically important to back-up the `.gaiad/data/priv_validator_state.json` file after stopping your gaiad process. This file is updated every block as your validator participates in a consensus rounds. It is a critical file needed to prevent double-signing, in case the upgrade fails and the previous chain needs to be restarted.
 
 In the event that the upgrade does not succeed, validators and operators must downgrade back to
 v0.34.6+ of the _Cosmos SDK_ and restore to their latest snapshot before restarting their nodes.
@@ -96,7 +96,7 @@ __Note__: It is assumed you are currently operating a full-node running v0.34.6+
 1. Verify you are currently running the correct version (v0.34.6+) of the _Cosmos SDK_:
 
    ```shell
-   $ bitsongd version --long
+   $ gaiad version --long
    cosmos-sdk: 0.34.6
    git commit: 80234baf91a15dd9a7df8dca38677b66b8d148c1
    vendor hash: f60176672270c09455c01e9d880079ba36130df4f5cd89df58b6701f50b13aad
@@ -111,10 +111,10 @@ __Note__: It is assumed you are currently operating a full-node running v0.34.6+
    comes online in a sufficient and agreed upon amount of time. In such a case, the chain will fallback
    to continue operating `cosmoshub-2`. See [Recovery](#recovery) for details on how to proceed.
 
-   Before exporting state via the following command, the `bitsongd` binary must be stopped!
+   Before exporting state via the following command, the `gaiad` binary must be stopped!
 
    ```shell
-   $ bitsongd export --for-zero-height --height=2902000 > cosmoshub_2_genesis_export.json
+   $ gaiad export --for-zero-height --height=2902000 > cosmoshub_2_genesis_export.json
    ```
 
 3. Verify the SHA256 of the (sorted) exported genesis file:
@@ -136,10 +136,10 @@ v2.0.3 of [Gaia](https://github.com/bitsongofficial/go-bitsong).
 5. Verify you are currently running the correct version (v2.0.3) of the _Gaia_:
 
    ```shell
-   $ bitsongd version --long
+   $ gaiad version --long
    name: gaia
-   server_name: bitsongd
-   client_name: bitsongcli
+   server_name: gaiad
+   client_name: gaiacli
    version: 2.0.3
    commit: 2f6783e298f25ff4e12cb84549777053ab88749a
    build_tags: netgo,ledger
@@ -149,7 +149,7 @@ v2.0.3 of [Gaia](https://github.com/bitsongofficial/go-bitsong).
 6. Migrate exported state from the current v0.34.6+ version to the new v2.0.3 version:
 
    ```shell
-   $ bitsongd migrate v0.36 cosmoshub_2_genesis_export.json --chain-id=cosmoshub-3 --genesis-time=[PLACEHOLDER]> genesis.json
+   $ gaiad migrate v0.36 cosmoshub_2_genesis_export.json --chain-id=cosmoshub-3 --genesis-time=[PLACEHOLDER]> genesis.json
    ```
 
    **NOTE**: The `migrate` command takes an input genesis state and migrates it to a targeted version.
@@ -184,20 +184,20 @@ single parameter, `max_validators`, that we're upgrading based on [proposal 10](
    See [Recovery](#recovery) for details on how to proceed.
 
    ```shell
-   $ bitsongd unsafe-reset-all
+   $ gaiad unsafe-reset-all
    ```
 
-10. Move the new `genesis.json` to your `.bitsongd/config/` directory
-11. Replace the `db_backend` on `.bitsongd/config/config.toml` to:
+10. Move the new `genesis.json` to your `.gaiad/config/` directory
+11. Replace the `db_backend` on `.gaiad/config/config.toml` to:
 
     ```toml
     db_backend = "goleveldb"
     ```
 
-12. Note, if you have any application configuration in `bitsongd.toml`, that file has now been renamed to `app.toml`:
+12. Note, if you have any application configuration in `gaiad.toml`, that file has now been renamed to `app.toml`:
 
     ```shell
-    $ mv .bitsongd/config/bitsongd.toml .bitsongd/config/app.toml
+    $ mv .gaiad/config/gaiad.toml .gaiad/config/app.toml
     ```
 
 ## Notes for Service Providers

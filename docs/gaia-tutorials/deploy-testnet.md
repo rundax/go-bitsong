@@ -4,7 +4,7 @@ order: 6
 
 # Deploy Your Own Gaia Testnet
 
-This document describes 3 ways to setup a network of `bitsongd` nodes, each serving a different usecase:
+This document describes 3 ways to setup a network of `gaiad` nodes, each serving a different usecase:
 
 1. Single-node, local, manual testnet
 2. Multi-node, local, automated testnet
@@ -18,10 +18,10 @@ Supporting code can be found in the [networks directory](https://github.com/bits
 
 In case you need to use or deploy gaia as a container you could skip the `build` steps and use the official images, \$TAG stands for the version you are interested in:
 
-- `docker run -it -v ~/.bitsongd:/root/.bitsongd -v ~/.bitsongcli:/root/.bitsongcli tendermint:$TAG bitsongd init`
-- `docker run -it -p 26657:26657 -p 26656:26656 -v ~/.bitsongd:/root/.bitsongd -v ~/.bitsongcli:/root/.bitsongcli tendermint:$TAG bitsongd start`
+- `docker run -it -v ~/.gaiad:/root/.gaiad -v ~/.gaiacli:/root/.gaiacli tendermint:$TAG gaiad init`
+- `docker run -it -p 26657:26657 -p 26656:26656 -v ~/.gaiad:/root/.gaiad -v ~/.gaiacli:/root/.gaiacli tendermint:$TAG gaiad start`
 - ...
-- `docker run -it -v ~/.bitsongd:/root/.bitsongd -v ~/.bitsongcli:/root/.bitsongcli tendermint:$TAG bitsongcli version`
+- `docker run -it -v ~/.gaiad:/root/.gaiad -v ~/.gaiacli:/root/.gaiacli tendermint:$TAG gaiacli version`
 
 The same images can be used to build your own docker-compose stack.
 
@@ -41,27 +41,27 @@ This guide helps you create a single validator node that runs a network locally 
 cd $HOME
 
 # Initialize the genesis.json file that will help you to bootstrap the network
-bitsongd init --chain-id=testing testing
+gaiad init --chain-id=testing testing
 
 # Create a key to hold your validator account
-bitsongcli keys add validator
+gaiacli keys add validator
 
 # Add that key into the genesis.app_state.accounts array in the genesis file
 # NOTE: this command lets you set the number of coins. Make sure this account has some coins
 # with the genesis.app_state.staking.params.bond_denom denom, the default is staking
-bitsongd add-genesis-account $(bitsongcli keys show validator -a) 1000000000stake,1000000000validatortoken
+gaiad add-genesis-account $(gaiacli keys show validator -a) 1000000000stake,1000000000validatortoken
 
 # Generate the transaction that creates your validator
-bitsongd gentx --name validator
+gaiad gentx --name validator
 
 # Add the generated bonding transaction to the genesis file
-bitsongd collect-gentxs
+gaiad collect-gentxs
 
-# Now its safe to start `bitsongd`
-bitsongd start
+# Now its safe to start `gaiad`
+gaiad start
 ```
 
-This setup puts all the data for `bitsongd` in `~/.bitsongd`. You can examine the genesis file you created at `~/.bitsongd/config/genesis.json`. With this configuration `bitsongcli` is also ready to use and has an account with tokens (both staking and custom).
+This setup puts all the data for `gaiad` in `~/.gaiad`. You can examine the genesis file you created at `~/.gaiad/config/genesis.json`. With this configuration `gaiacli` is also ready to use and has an account with tokens (both staking and custom).
 
 ## Multi-node, Local, Automated Testnet
 
@@ -75,7 +75,7 @@ From the [networks/local directory](https://github.com/bitsongofficial/go-bitson
 
 ### Build
 
-Build the `bitsongd` binary (linux) and the `tendermint/bitsongdnode` docker image required for running the `localnet` commands. This binary will be mounted into the container and can be updated rebuilding the image, so you only need to build the image once.
+Build the `gaiad` binary (linux) and the `tendermint/gaiadnode` docker image required for running the `localnet` commands. This binary will be mounted into the container and can be updated rebuilding the image, so you only need to build the image once.
 
 ```bash
 # Clone the gaia repo
@@ -87,8 +87,8 @@ cd gaia
 # Build the linux binary in ./build
 make build-linux
 
-# Build tendermint/bitsongdnode image
-make build-docker-bitsongdnode
+# Build tendermint/gaiadnode image
+make build-docker-gaiadnode
 ```
 
 ### Run Your Testnet
@@ -99,7 +99,7 @@ To start a 4 node testnet run:
 make localnet-start
 ```
 
-This command creates a 4-node network using the bitsongdnode image.
+This command creates a 4-node network using the gaiadnode image.
 The ports for each node are found in this table:
 
 | Node ID     | P2P Port | RPC Port |
@@ -118,75 +118,75 @@ make build-linux localnet-start
 ### Configuration
 
 The `make localnet-start` creates files for a 4-node testnet in `./build` by
-calling the `bitsongd testnet` command. This outputs a handful of files in the
+calling the `gaiad testnet` command. This outputs a handful of files in the
 `./build` directory:
 
 ```bash
 $ tree -L 2 build/
 build/
-├── bitsongcli
-├── bitsongd
+├── gaiacli
+├── gaiad
 ├── gentxs
 │   ├── node0.json
 │   ├── node1.json
 │   ├── node2.json
 │   └── node3.json
 ├── node0
-│   ├── bitsongcli
+│   ├── gaiacli
 │   │   ├── key_seed.json
 │   │   └── keys
-│   └── bitsongd
-│       ├── ${LOG:-bitsongd.log}
+│   └── gaiad
+│       ├── ${LOG:-gaiad.log}
 │       ├── config
 │       └── data
 ├── node1
-│   ├── bitsongcli
+│   ├── gaiacli
 │   │   └── key_seed.json
-│   └── bitsongd
-│       ├── ${LOG:-bitsongd.log}
+│   └── gaiad
+│       ├── ${LOG:-gaiad.log}
 │       ├── config
 │       └── data
 ├── node2
-│   ├── bitsongcli
+│   ├── gaiacli
 │   │   └── key_seed.json
-│   └── bitsongd
-│       ├── ${LOG:-bitsongd.log}
+│   └── gaiad
+│       ├── ${LOG:-gaiad.log}
 │       ├── config
 │       └── data
 └── node3
-    ├── bitsongcli
+    ├── gaiacli
     │   └── key_seed.json
-    └── bitsongd
-        ├── ${LOG:-bitsongd.log}
+    └── gaiad
+        ├── ${LOG:-gaiad.log}
         ├── config
         └── data
 ```
 
-Each `./build/nodeN` directory is mounted to the `/bitsongd` directory in each container.
+Each `./build/nodeN` directory is mounted to the `/gaiad` directory in each container.
 
 ### Logging
 
-Logs are saved under each `./build/nodeN/bitsongd/gaia.log`. You can also watch logs
+Logs are saved under each `./build/nodeN/gaiad/gaia.log`. You can also watch logs
 directly via Docker, for example:
 
 ```
-docker logs -f bitsongdnode0
+docker logs -f gaiadnode0
 ```
 
 ### Keys & Accounts
 
-To interact with `bitsongcli` and start querying state or creating txs, you use the
-`bitsongcli` directory of any given node as your `home`, for example:
+To interact with `gaiacli` and start querying state or creating txs, you use the
+`gaiacli` directory of any given node as your `home`, for example:
 
 ```shell
-bitsongcli keys list --home ./build/node0/bitsongcli
+gaiacli keys list --home ./build/node0/gaiacli
 ```
 
 Now that accounts exists, you may create new accounts and send those accounts
 funds!
 
 ::: tip
-**Note**: Each node's seed is located at `./build/nodeN/bitsongcli/key_seed.json` and can be restored to the CLI using the `bitsongcli keys add --restore` command
+**Note**: Each node's seed is located at `./build/nodeN/gaiacli/key_seed.json` and can be restored to the CLI using the `gaiacli keys add --restore` command
 :::
 
 ### Special Binaries
