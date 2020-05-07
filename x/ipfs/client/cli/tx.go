@@ -12,8 +12,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	authclient "github.com/cosmos/cosmos-sdk/x/auth/client"
+	chunker "github.com/ipfs/go-ipfs-chunker"
 	"github.com/spf13/cobra"
-	"io/ioutil"
+	"io"
+	"os"
 )
 
 func GetTxCmd(cdc *codec.Codec) *cobra.Command {
@@ -43,13 +45,36 @@ func GetCmdPut(cdc *codec.Codec) *cobra.Command {
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(authclient.GetTxEncoder(cdc))
 			cliCtx := context.NewCLIContextWithInput(inBuf).WithCodec(cdc)
 
-			data, err := ioutil.ReadFile(args[0])
+			/*data, err := ioutil.ReadFile(args[0])
+			if err != nil {
+				return err
+			}*/
+
+			file, _ := os.Open(args[0])
+			chnk, err := chunker.FromString(bufio.NewReader(file), "size-262144")
 			if err != nil {
 				return err
 			}
 
-			msg := types.NewMsgPut(data, cliCtx.FromAddress)
-			return authclient.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
+			for {
+				chunk, err := chnk.NextBytes()
+				if err != nil {
+					if err == io.EOF {
+						break
+					}
+					panic(err)
+				}
+				//res = res + uint64(len(chunk))
+				err = authclient.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{types.NewMsgPut(chunk, cliCtx.FromAddress)})
+				if err != nil {
+					panic(err)
+				}
+			}
+
+
+			//msg := types.NewMsgPut(data, cliCtx.FromAddress)
+			//return authclient.GenerateOrBroadcastMsgs(cliCtx, txBldr, msgs)
+			return nil
 		},
 	}
 
