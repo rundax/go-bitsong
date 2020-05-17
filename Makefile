@@ -5,6 +5,7 @@ VERSION := $(shell echo $(shell git describe --tags) | sed 's/^v//')
 COMMIT := $(shell git log -1 --format='%H')
 LEDGER_ENABLED ?= true
 SDK_PACK := $(shell go list -m github.com/cosmos/cosmos-sdk | sed  's/ /\@/g')
+BUILDDIR ?= $(CURDIR)/build
 TEST_DOCKER_REPO=jackzampolin/gaiatest
 
 export GO111MODULE = on
@@ -80,23 +81,16 @@ include contrib/devtools/Makefile
 all: install lint test
 
 build: go.sum
-ifeq ($(OS),Windows_NT)
-	go build -mod=readonly $(BUILD_FLAGS) -o build/bitsongd.exe ./cmd/bitsongd
-	go build -mod=readonly $(BUILD_FLAGS) -o build/bitsongcli.exe ./cmd/bitsongcli
-else
-	go build -mod=readonly $(BUILD_FLAGS) -o build/bitsongd ./cmd/bitsongd
-	go build -mod=readonly $(BUILD_FLAGS) -o build/bitsongcli ./cmd/bitsongcli
-endif
+	mkdir -p $(BUILDDIR)
+	go build -mod=readonly $(BUILD_FLAGS) -o $(BUILDDIR)/ ./cmd/bitsongd
+	go build -mod=readonly $(BUILD_FLAGS) -o $(BUILDDIR)/ ./cmd/bitsongcli
 
 build-linux: go.sum
 	LEDGER_ENABLED=false GOOS=linux GOARCH=amd64 $(MAKE) build
 
 build-contract-tests-hooks:
-ifeq ($(OS),Windows_NT)
-	go build -mod=readonly $(BUILD_FLAGS) -o build/contract_tests.exe ./cmd/contract_tests
-else
-	go build -mod=readonly $(BUILD_FLAGS) -o build/contract_tests ./cmd/contract_tests
-endif
+	mkdir -p $(BUILDDIR)
+	go build -mod=readonly $(BUILD_FLAGS) -o $(BUILDDIR)/ ./cmd/contract_tests
 
 install: go.sum
 	go install -mod=readonly $(BUILD_FLAGS) ./cmd/bitsongd
