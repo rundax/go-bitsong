@@ -82,10 +82,6 @@ func (app *GaiaApp) prepForZeroHeightGenesis(ctx sdk.Context, jailWhiteList []st
 	// clear validator historical rewards
 	//app.distrKeeper.DeleteAllValidatorHistoricalRewards(ctx)
 
-	// set context height to zero
-	height := ctx.BlockHeight()
-	ctx = ctx.WithBlockHeight(0)
-
 	// reinitialize all validators
 	/*app.stakingKeeper.IterateValidators(ctx, func(_ int64, val staking.ValidatorI) (stop bool) {
 
@@ -106,6 +102,7 @@ func (app *GaiaApp) prepForZeroHeightGenesis(ctx sdk.Context, jailWhiteList []st
 	}*/
 
 	// reset context height
+	height := ctx.BlockHeight()
 	ctx = ctx.WithBlockHeight(height)
 
 	/* Handle staking state. */

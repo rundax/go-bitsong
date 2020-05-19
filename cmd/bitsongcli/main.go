@@ -75,6 +75,8 @@ func main() {
 		flags.LineBreak,
 		keys.Commands(),
 		flags.LineBreak,
+		ipfsCmd(),
+		flags.LineBreak,
 		version.Cmd,
 		flags.NewCompletionCmd(rootCmd, true),
 	)

@@ -5,7 +5,6 @@ package ipfs
 // based on functionality in github.com/rigelrozanski/multitool
 
 import (
-	"github.com/bitsongofficial/go-bitsong/x/ipfs/client/cli"
 	"github.com/bitsongofficial/go-bitsong/x/ipfs/keeper"
 	"github.com/bitsongofficial/go-bitsong/x/ipfs/types"
 )
@@ -28,8 +27,6 @@ var (
 	ValidateGenesis     = types.ValidateGenesis
 	RegisterCodec       = types.RegisterCodec
 	NewMsgPut           = types.NewMsgPut
-	GetTxCmd            = cli.GetTxCmd
-	GetCmdPut           = cli.GetCmdPut
 	NewHandler          = keeper.NewHandler
 	NewKeeper           = keeper.NewKeeper
 

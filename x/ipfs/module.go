@@ -2,7 +2,6 @@ package ipfs
 
 import (
 	"encoding/json"
-	"github.com/bitsongofficial/go-bitsong/x/ipfs/client/cli"
 	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -53,7 +52,8 @@ func (AppModuleBasic) RegisterRESTRoutes(ctx context.CLIContext, rtr *mux.Router
 
 // GetTxCmd returns the root tx command for the track module.
 func (AppModuleBasic) GetTxCmd(cdc *codec.Codec) *cobra.Command {
-	return cli.GetTxCmd(cdc)
+	//return cli.GetTxCmd(cdc)
+	return nil
 }
 
 // GetQueryCmd returns no root query command for the track module.

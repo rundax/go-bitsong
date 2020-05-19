@@ -29,7 +29,7 @@ import (
 	ibcclient "github.com/cosmos/cosmos-sdk/x/ibc/02-client"
 	port "github.com/cosmos/cosmos-sdk/x/ibc/05-port"
 	transfer "github.com/cosmos/cosmos-sdk/x/ibc/20-transfer"
-	"github.com/cosmos/cosmos-sdk/x/mint"
+	//"github.com/cosmos/cosmos-sdk/x/mint"
 	"github.com/cosmos/cosmos-sdk/x/params"
 	paramsclient "github.com/cosmos/cosmos-sdk/x/params/client"
 	paramproposal "github.com/cosmos/cosmos-sdk/x/params/types/proposal"
@@ -78,9 +78,7 @@ var (
 
 	// module account permissions
 	maccPerms = map[string][]string{
-		auth.FeeCollectorName: nil,
-		//distr.ModuleName:      nil,
-		//mint.ModuleName:                 {auth.Minter},
+		auth.FeeCollectorName:           nil,
 		staking.BondedPoolName:          {auth.Burner, auth.Staking},
 		staking.NotBondedPoolName:       {auth.Burner, auth.Staking},
 		gov.ModuleName:                  {auth.Burner},
@@ -117,15 +115,13 @@ type GaiaApp struct {
 	capabilityKeeper *capability.Keeper
 	stakingKeeper    staking.Keeper
 	slashingKeeper   slashing.Keeper
-	//mintKeeper       mint.Keeper
-	//distrKeeper    distr.Keeper
-	govKeeper      gov.Keeper
-	crisisKeeper   crisis.Keeper
-	upgradeKeeper  upgrade.Keeper
-	paramsKeeper   params.Keeper
-	ibcKeeper      *ibc.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
-	evidenceKeeper evidence.Keeper
-	transferKeeper transfer.Keeper
+	govKeeper        gov.Keeper
+	crisisKeeper     crisis.Keeper
+	upgradeKeeper    upgrade.Keeper
+	paramsKeeper     params.Keeper
+	ibcKeeper        *ibc.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
+	evidenceKeeper   evidence.Keeper
+	transferKeeper   transfer.Keeper
 
 	// BitSong Keeper
 	ipfsKeeper ipfs.Keeper
@@ -158,8 +154,6 @@ func NewGaiaApp(
 
 	keys := sdk.NewKVStoreKeys(
 		auth.StoreKey, bank.StoreKey, staking.StoreKey,
-		//mint.StoreKey,
-		//distr.StoreKey,
 		slashing.StoreKey,
 		gov.StoreKey, params.StoreKey, ibc.StoreKey, upgrade.StoreKey,
 		evidence.StoreKey, transfer.StoreKey, capability.StoreKey,
@@ -207,14 +201,6 @@ func NewGaiaApp(
 	stakingKeeper := staking.NewKeeper(
 		appCodec, keys[staking.StoreKey], app.accountKeeper, app.bankKeeper, app.subspaces[staking.ModuleName],
 	)
-	//app.mintKeeper = mint.NewKeeper(
-	//	appCodec, keys[mint.StoreKey], app.subspaces[mint.ModuleName], &stakingKeeper,
-	//	app.accountKeeper, app.bankKeeper, auth.FeeCollectorName,
-	//)
-	//app.distrKeeper = distr.NewKeeper(
-	//	appCodec, keys[distr.StoreKey], app.subspaces[distr.ModuleName], app.accountKeeper, app.bankKeeper,
-	//	&stakingKeeper, auth.FeeCollectorName, app.ModuleAccountAddrs(),
-	//)
 	app.slashingKeeper = slashing.NewKeeper(
 		appCodec, keys[slashing.StoreKey], &stakingKeeper, app.subspaces[slashing.ModuleName],
 	)
@@ -236,8 +222,11 @@ func NewGaiaApp(
 
 	// register the staking hooks
 	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
-	app.stakingKeeper = *stakingKeeper.SetHooks(staking.NewMultiStakingHooks())
-	//	staking.NewMultiStakingHooks(app.slashingKeeper.Hooks()),
+	app.stakingKeeper = *stakingKeeper.SetHooks(
+		staking.NewMultiStakingHooks(
+			//app.distrKeeper.Hooks(),
+			app.slashingKeeper.Hooks()),
+	)
 
 	// Create IBC Keeper
 	app.ibcKeeper = ibc.NewKeeper(
@@ -296,15 +285,18 @@ func NewGaiaApp(
 	// there is nothing left over in the validator fee pool, so as to keep the
 	// CanWithdrawInvariant invariant.
 	app.mm.SetOrderBeginBlockers(
-		upgrade.ModuleName,
-		//mint.ModuleName,
-		//distr.ModuleName,
-		slashing.ModuleName,
-		evidence.ModuleName,
-		//staking.ModuleName,
-		ibc.ModuleName,
+	//upgrade.ModuleName,
+	//mint.ModuleName, distr.ModuleName,
+	//slashing.ModuleName,
+	//evidence.ModuleName,
+	//staking.ModuleName,
+	//ibc.ModuleName,
 	)
-	app.mm.SetOrderEndBlockers(crisis.ModuleName, gov.ModuleName) //staking.ModuleName
+	app.mm.SetOrderEndBlockers(
+	//crisis.ModuleName,
+	//gov.ModuleName,
+	//staking.ModuleName
+	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
 	// properly initialized with tokens from genesis accounts.
@@ -315,7 +307,9 @@ func NewGaiaApp(
 		capability.ModuleName, auth.ModuleName,
 		//distr.ModuleName,
 		staking.ModuleName, bank.ModuleName,
-		slashing.ModuleName, gov.ModuleName, mint.ModuleName, crisis.ModuleName,
+		slashing.ModuleName, gov.ModuleName,
+		//mint.ModuleName,
+		crisis.ModuleName,
 		ibc.ModuleName, genutil.ModuleName, evidence.ModuleName, transfer.ModuleName,
 		ipfs.ModuleName,
 	)
