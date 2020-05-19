@@ -1,4 +1,4 @@
-package ipfs
+package peer
 
 import (
 	"encoding/json"

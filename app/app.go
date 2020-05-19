@@ -1,7 +1,7 @@
 package app
 
 import (
-	"github.com/bitsongofficial/go-bitsong/x/ipfs"
+	"github.com/bitsongofficial/go-bitsong/x/peer"
 	"io"
 	"os"
 
@@ -73,7 +73,7 @@ var (
 		transfer.AppModuleBasic{},
 
 		// BitSong Modules
-		ipfs.AppModuleBasic{},
+		peer.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -124,7 +124,7 @@ type GaiaApp struct {
 	transferKeeper   transfer.Keeper
 
 	// BitSong Keeper
-	ipfsKeeper ipfs.Keeper
+	ipfsKeeper peer.Keeper
 
 	// make scoped keepers public for test purposes
 	scopedIBCKeeper      capability.ScopedKeeper
@@ -157,7 +157,7 @@ func NewGaiaApp(
 		slashing.StoreKey,
 		gov.StoreKey, params.StoreKey, ibc.StoreKey, upgrade.StoreKey,
 		evidence.StoreKey, transfer.StoreKey, capability.StoreKey,
-		ipfs.StoreKey,
+		peer.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(params.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capability.MemStoreKey)
@@ -257,7 +257,7 @@ func NewGaiaApp(
 	evidenceKeeper.SetRouter(evidenceRouter)
 	app.evidenceKeeper = *evidenceKeeper
 
-	app.ipfsKeeper = ipfs.NewKeeper(cdc, keys[ipfs.StoreKey])
+	app.ipfsKeeper = peer.NewKeeper(cdc, keys[peer.StoreKey])
 
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
@@ -278,7 +278,7 @@ func NewGaiaApp(
 		params.NewAppModule(app.paramsKeeper),
 		transferModule,
 
-		ipfs.NewAppModule(app.ipfsKeeper),
+		peer.NewAppModule(app.ipfsKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -311,7 +311,7 @@ func NewGaiaApp(
 		//mint.ModuleName,
 		crisis.ModuleName,
 		ibc.ModuleName, genutil.ModuleName, evidence.ModuleName, transfer.ModuleName,
-		ipfs.ModuleName,
+		peer.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(&app.crisisKeeper)

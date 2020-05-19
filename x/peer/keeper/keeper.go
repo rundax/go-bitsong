@@ -2,7 +2,7 @@ package keeper
 
 import (
 	"fmt"
-	"github.com/bitsongofficial/go-bitsong/x/ipfs/types"
+	"github.com/bitsongofficial/go-bitsong/x/peer/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	blocks "github.com/ipfs/go-block-format"
