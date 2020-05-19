@@ -59,7 +59,7 @@ func (app *GaiaApp) prepForZeroHeightGenesis(ctx sdk.Context, jailWhiteList []st
 	/* Handle fee distribution state. */
 
 	// withdraw all validator commission
-	app.stakingKeeper.IterateValidators(ctx, func(_ int64, val staking.ValidatorI) (stop bool) {
+	/*app.stakingKeeper.IterateValidators(ctx, func(_ int64, val staking.ValidatorI) (stop bool) {
 		_, err := app.distrKeeper.WithdrawValidatorCommission(ctx, val.GetOperator())
 		if err != nil {
 			log.Fatal(err)
@@ -103,9 +103,10 @@ func (app *GaiaApp) prepForZeroHeightGenesis(ctx sdk.Context, jailWhiteList []st
 	for _, del := range dels {
 		app.distrKeeper.Hooks().BeforeDelegationCreated(ctx, del.DelegatorAddress, del.ValidatorAddress)
 		app.distrKeeper.Hooks().AfterDelegationModified(ctx, del.DelegatorAddress, del.ValidatorAddress)
-	}
+	}*/
 
 	// reset context height
+	height := ctx.BlockHeight()
 	ctx = ctx.WithBlockHeight(height)
 
 	/* Handle staking state. */

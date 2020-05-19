@@ -13,20 +13,24 @@ if [ -z "$2" ]; then
   exit 1
 fi
 
+rm -rf ~/.bitsong*
+
 # Build genesis file incl account for passed address
 coins="10000000000stake,100000000000samoleans"
-gaiad init --chain-id $CHAINID $CHAINID
-gaiacli keys add validator --keyring-backend="test"
-gaiad add-genesis-account validator $coins --keyring-backend="test"
-gaiad add-genesis-account $GENACCT $coins --keyring-backend="test"
-gaiad gentx --name validator --keyring-backend="test"
-gaiad collect-gentxs
+bitsongd init --chain-id $CHAINID $CHAINID
+bitsongcli keys add validator --keyring-backend="test"
+bitsongd add-genesis-account validator $coins --keyring-backend="test"
+bitsongd add-genesis-account $GENACCT $coins --keyring-backend="test"
+bitsongd gentx --name validator --keyring-backend="test"
+bitsongd collect-gentxs
 
 # Set proper defaults and change ports
-sed -i 's#"tcp://127.0.0.1:26657"#"tcp://0.0.0.0:26657"#g' ~/.gaiad/config/config.toml
-sed -i 's/timeout_commit = "5s"/timeout_commit = "1s"/g' ~/.gaiad/config/config.toml
-sed -i 's/timeout_propose = "3s"/timeout_propose = "1s"/g' ~/.gaiad/config/config.toml
-sed -i 's/index_all_keys = false/index_all_keys = true/g' ~/.gaiad/config/config.toml
+sed -i 's#"tcp://127.0.0.1:26657"#"tcp://0.0.0.0:26657"#g' ~/.bitsongd/config/config.toml
+sed -i 's/timeout_commit = "5s"/timeout_commit = "1s"/g' ~/.bitsongd/config/config.toml
+sed -i 's/timeout_propose = "3s"/timeout_propose = "1s"/g' ~/.bitsongd/config/config.toml
+sed -i 's/index_all_keys = false/index_all_keys = true/g' ~/.bitsongd/config/config.toml
+sed -i 's/skip_timeout_commit = false/skip_timeout_commit = true/g' ~/.bitsongd/config/config.toml
+sed -i 's/create_empty_blocks = true/create_empty_blocks = false/g' ~/.bitsongd/config/config.toml
 
-# Start the gaia
-gaiad start --pruning=nothing
+# Start bitsong
+bitsongd start --pruning=nothing
