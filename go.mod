@@ -3,7 +3,7 @@ module github.com/bitsongofficial/go-bitsong
 go 1.14
 
 require (
-	github.com/cosmos/cosmos-sdk v0.34.4-0.20200511222341-80be50319ca5
+	github.com/cosmos/cosmos-sdk v0.34.4-0.20200522204605-4a07d536a7cc
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/mitchellh/mapstructure v1.3.0 // indirect
 	github.com/onsi/ginkgo v1.8.0 // indirect
