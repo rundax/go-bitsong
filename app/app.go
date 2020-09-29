@@ -1,7 +1,6 @@
 package app
 
 import (
-	"github.com/bitsongofficial/go-bitsong/x/asset"
 	"github.com/bitsongofficial/go-bitsong/x/mpeg21"
 	bam "github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -64,7 +63,6 @@ var (
 		evidence.AppModuleBasic{},
 
 		// BitSong
-		nft.AppModuleBasic{},
 		mpeg21.AppModuleBasic{},
 	)
 
@@ -129,7 +127,6 @@ type GoBitsong struct {
 	paramsKeeper   params.Keeper
 	evidenceKeeper evidence.Keeper
 
-	NFTKeeper    nft.Keeper
 	mpeg21Keeper mpeg21.Keeper
 
 	// Module Manager
@@ -231,9 +228,6 @@ func NewBitsongApp(
 		staking.NewMultiStakingHooks(app.distrKeeper.Hooks(), app.slashingKeeper.Hooks()),
 	)
 
-	app.NFTKeeper = nft.NewKeeper(app.cdc, keys[nft.StoreKey])
-	nftModule := nft.NewAppModule(app.NFTKeeper, app.accountKeeper)
-
 	app.mpeg21Keeper = mpeg21.NewKeeper(app.cdc, app.keys[mpeg21.ModuleName])
 
 	// NOTE: Any module instantiated in the module manager that is later modified
@@ -251,7 +245,6 @@ func NewBitsongApp(
 		staking.NewAppModule(app.stakingKeeper, app.accountKeeper, app.supplyKeeper),
 		upgrade.NewAppModule(app.upgradeKeeper),
 		evidence.NewAppModule(app.evidenceKeeper),
-		asset.NewAssetModule(nftModule, app.NFTKeeper),
 		mpeg21.NewAppModule(app.mpeg21Keeper),
 	)
 
@@ -288,7 +281,6 @@ func NewBitsongApp(
 		distr.NewAppModule(app.distrKeeper, app.accountKeeper, app.supplyKeeper, app.stakingKeeper),
 		staking.NewAppModule(app.stakingKeeper, app.accountKeeper, app.supplyKeeper),
 		slashing.NewAppModule(app.slashingKeeper, app.accountKeeper, app.stakingKeeper),
-		nft.NewAppModule(app.NFTKeeper, app.accountKeeper),
 	)
 
 	app.sm.RegisterStoreDecoders()

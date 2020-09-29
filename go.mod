@@ -5,16 +5,11 @@ go 1.13
 require (
 	github.com/99designs/keyring v1.1.6 // indirect
 	github.com/ChainSafe/go-schnorrkel v0.0.0-20200626160457-b38283118816 // indirect
-	github.com/DataDog/zstd v1.4.5 // indirect
 	github.com/btcsuite/btcd v0.21.0-beta // indirect
 	github.com/cosmos/cosmos-sdk v0.39.1
 	github.com/cosmos/go-bip39 v0.0.0-20200817134856-d632e0d11689 // indirect
 	github.com/cosmos/modules/incubator/nft v0.0.0-20200715075539-8c1862235a75
 	github.com/danieljoos/wincred v1.1.0 // indirect
-	github.com/dgraph-io/badger/v2 v2.2007.2 // indirect
-	github.com/dgraph-io/ristretto v0.0.3 // indirect
-	github.com/dgryski/go-farm v0.0.0-20200201041132-a6ae2369ad13 // indirect
-	github.com/emersion/go-jsonld v0.0.0-20170725170255-401cba701428
 	github.com/golang/mock v1.4.3 // indirect
 	github.com/golang/snappy v0.0.2 // indirect
 	github.com/gorilla/mux v1.8.0
