@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/bitsongofficial/go-bitsong/x/asset"
 	bam "github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/simapp"
@@ -22,6 +23,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/cosmos/cosmos-sdk/x/supply"
+	"github.com/cosmos/modules/incubator/nft"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/libs/log"
 	tmos "github.com/tendermint/tendermint/libs/os"
@@ -59,6 +61,9 @@ var (
 		upgrade.AppModuleBasic{},
 		supply.AppModuleBasic{},
 		evidence.AppModuleBasic{},
+
+		// BitSong
+		nft.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -122,6 +127,8 @@ type GoBitsong struct {
 	paramsKeeper   params.Keeper
 	evidenceKeeper evidence.Keeper
 
+	NFTKeeper nft.Keeper
+
 	// Module Manager
 	mm *module.Manager
 
@@ -145,6 +152,7 @@ func NewBitsongApp(
 		bam.MainStoreKey, auth.StoreKey, staking.StoreKey,
 		supply.StoreKey, mint.StoreKey, distr.StoreKey, slashing.StoreKey,
 		gov.StoreKey, upgrade.StoreKey, params.StoreKey, evidence.StoreKey,
+		nft.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(params.TStoreKey)
 
@@ -220,6 +228,9 @@ func NewBitsongApp(
 		staking.NewMultiStakingHooks(app.distrKeeper.Hooks(), app.slashingKeeper.Hooks()),
 	)
 
+	app.NFTKeeper = nft.NewKeeper(app.cdc, keys[nft.StoreKey])
+	nftModule := nft.NewAppModule(app.NFTKeeper, app.accountKeeper)
+
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
 	app.mm = module.NewManager(
@@ -235,6 +246,7 @@ func NewBitsongApp(
 		staking.NewAppModule(app.stakingKeeper, app.accountKeeper, app.supplyKeeper),
 		upgrade.NewAppModule(app.upgradeKeeper),
 		evidence.NewAppModule(app.evidenceKeeper),
+		asset.NewAssetModule(nftModule, app.NFTKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -251,7 +263,7 @@ func NewBitsongApp(
 	app.mm.SetOrderInitGenesis(
 		auth.ModuleName, distr.ModuleName, staking.ModuleName, bank.ModuleName,
 		slashing.ModuleName, gov.ModuleName, evidence.ModuleName, mint.ModuleName,
-		supply.ModuleName, crisis.ModuleName, genutil.ModuleName,
+		supply.ModuleName, crisis.ModuleName, genutil.ModuleName, nft.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(&app.crisisKeeper)
@@ -269,6 +281,7 @@ func NewBitsongApp(
 		distr.NewAppModule(app.distrKeeper, app.accountKeeper, app.supplyKeeper, app.stakingKeeper),
 		staking.NewAppModule(app.stakingKeeper, app.accountKeeper, app.supplyKeeper),
 		slashing.NewAppModule(app.slashingKeeper, app.accountKeeper, app.stakingKeeper),
+		nft.NewAppModule(app.NFTKeeper, app.accountKeeper),
 	)
 
 	app.sm.RegisterStoreDecoders()
