@@ -2,6 +2,7 @@ package app
 
 import (
 	"github.com/bitsongofficial/go-bitsong/x/asset"
+	"github.com/bitsongofficial/go-bitsong/x/mpeg21"
 	bam "github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/simapp"
@@ -64,6 +65,7 @@ var (
 
 		// BitSong
 		nft.AppModuleBasic{},
+		mpeg21.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -127,7 +129,8 @@ type GoBitsong struct {
 	paramsKeeper   params.Keeper
 	evidenceKeeper evidence.Keeper
 
-	NFTKeeper nft.Keeper
+	NFTKeeper    nft.Keeper
+	mpeg21Keeper mpeg21.Keeper
 
 	// Module Manager
 	mm *module.Manager
@@ -152,7 +155,7 @@ func NewBitsongApp(
 		bam.MainStoreKey, auth.StoreKey, staking.StoreKey,
 		supply.StoreKey, mint.StoreKey, distr.StoreKey, slashing.StoreKey,
 		gov.StoreKey, upgrade.StoreKey, params.StoreKey, evidence.StoreKey,
-		nft.StoreKey,
+		nft.StoreKey, mpeg21.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(params.TStoreKey)
 
@@ -231,6 +234,8 @@ func NewBitsongApp(
 	app.NFTKeeper = nft.NewKeeper(app.cdc, keys[nft.StoreKey])
 	nftModule := nft.NewAppModule(app.NFTKeeper, app.accountKeeper)
 
+	app.mpeg21Keeper = mpeg21.NewKeeper(app.cdc, app.keys[mpeg21.ModuleName])
+
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
 	app.mm = module.NewManager(
@@ -247,6 +252,7 @@ func NewBitsongApp(
 		upgrade.NewAppModule(app.upgradeKeeper),
 		evidence.NewAppModule(app.evidenceKeeper),
 		asset.NewAssetModule(nftModule, app.NFTKeeper),
+		mpeg21.NewAppModule(app.mpeg21Keeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -264,6 +270,7 @@ func NewBitsongApp(
 		auth.ModuleName, distr.ModuleName, staking.ModuleName, bank.ModuleName,
 		slashing.ModuleName, gov.ModuleName, evidence.ModuleName, mint.ModuleName,
 		supply.ModuleName, crisis.ModuleName, genutil.ModuleName, nft.ModuleName,
+		mpeg21.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(&app.crisisKeeper)
