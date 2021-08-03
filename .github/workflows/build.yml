@@ -1,25 +1,61 @@
 on: [push, pull_request]
-name: Test
+name: Build binaries
 jobs:
   test:
     strategy:
       matrix:
         go-version: [1.13.x]
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest]
+#        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Install Go
         uses: actions/setup-go@v2
         with:
           go-version: ${{ matrix.go-version }}
+
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          # In order:
+          # * Module download cache
+          # * Build cache (Linux)
+          # * Build cache (Mac)
+          # * Build cache (Windows)
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+            ~/Library/Caches/go-build
+            %LocalAppData%\go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
       - name: Load deps
         run: make go-mod-cache
+
       - name: build code
         run: make build
-      - name: Archive production artifacts
-        uses: actions/upload-artifact@v2
+
+      - name: Create zip # This would actually build your project, using zip for an example artifact
+        run: |
+          zip --junk-paths build
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: build folder
-          path: build
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload assets to a Release
+        uses: AButler/upload-release-assets@v2.0
+        with:
+          files: 'build/*'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
