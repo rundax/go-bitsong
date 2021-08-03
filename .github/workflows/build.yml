@@ -36,11 +36,14 @@ jobs:
       - name: Load deps
         run: make go-mod-cache
 
-      - name: build code
+      - name: Build code
         run: make build
 
-      - name: Upload assets to a Release
-        uses: AButler/upload-release-assets@v2.0
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
         with:
-          files: 'build/*'
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/*
+          tag: ${{ github.ref }}
+          overwrite: true
+          file_glob: true
