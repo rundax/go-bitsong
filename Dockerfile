@@ -14,8 +14,8 @@ WORKDIR /go/src/github.com/bitsongofficial/go-bitsong
 COPY . .
 
 # Install minimum necessary dependencies, build Cosmos SDK, remove packages
-RUN apk add --no-cache $PACKAGES && \
-    make tools && \
+RUN apk add --no-cache $PACKAGES
+RUN make go-mod-cache && \
     make install
 
 # Final image

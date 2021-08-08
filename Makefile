@@ -194,3 +194,7 @@ include sims.mk
 	go-mod-cache draw-deps clean build \
 	setup-transactions setup-contract-tests-data start-go-bitsong run-lcd-contract-tests contract-tests \
 	test test-all test-build test-cover test-unit test-race
+
+
+docker-build:
+	docker build . -f .docker/Dockerfile -t test
