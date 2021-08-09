@@ -1,8 +1,8 @@
-name: Publish
-on:
-  push:
-    tags:
-      - '*'
+name: Publish Docker image
+#on:
+#  release:
+#    types: [published]
+on: [push]
 
 jobs:
   test:
@@ -40,50 +40,50 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          push: false
-          tags: user/app:latest
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new
-        # This ugly bit is necessary if you don't want your cache to grow forever
-        # till it hits GitHub's limit of 5GB.
-        # Temp fix
-        # https://github.com/docker/build-push-action/issues/252
-        # https://github.com/moby/buildkit/issues/1896
-      - name: Move cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-
-#######################################################################3
-      - name: Install Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: ${{ matrix.go-version }}
-
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - uses: actions/cache@v2
-        with:
-          # In order:
-          # * Module download cache
-          # * Build cache (Linux)
-          # * Build cache (Mac)
-          # * Build cache (Windows)
-          path: |
-            ~/go/pkg/mod
-            ~/.cache/go-build
-            ~/Library/Caches/go-build
-            %LocalAppData%\go-build
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
-
-      - name: Load deps
-        run: make go-mod-cache
-
-      - name: Build code
-        run: make build
+          push: true
+#          tags: ${{ secrets.DOKER_IMAGE }}:${{steps.vars.outputs.tag}}
+#          cache-from: type=local,src=/tmp/.buildx-cache
+#          cache-to: type=local,dest=/tmp/.buildx-cache-new
+#        # This ugly bit is necessary if you don't want your cache to grow forever
+#        # till it hits GitHub's limit of 5GB.
+#        # Temp fix
+#        # https://github.com/docker/build-push-action/issues/252
+#        # https://github.com/moby/buildkit/issues/1896
+#      - name: Move cache
+#        run: |
+#          rm -rf /tmp/.buildx-cache
+#          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+#
+########################################################################3
+#      - name: Install Go
+#        uses: actions/setup-go@v2
+#        with:
+#          go-version: ${{ matrix.go-version }}
+#
+#      - name: Checkout code
+#        uses: actions/checkout@v2
+#
+#      - uses: actions/cache@v2
+#        with:
+#          # In order:
+#          # * Module download cache
+#          # * Build cache (Linux)
+#          # * Build cache (Mac)
+#          # * Build cache (Windows)
+#          path: |
+#            ~/go/pkg/mod
+#            ~/.cache/go-build
+#            ~/Library/Caches/go-build
+#            %LocalAppData%\go-build
+#          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+#          restore-keys: |
+#            ${{ runner.os }}-go-
+#
+#      - name: Load deps
+#        run: make go-mod-cache
+#
+#      - name: Build code
+#        run: make build
 
 #      - name: Upload binaries to release
 #        uses: svenstaro/upload-release-action@v2
