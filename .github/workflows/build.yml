@@ -5,7 +5,7 @@ name: Publish Docker image
 on: [push]
 
 jobs:
-  test:
+  push_to_registry:
     strategy:
       matrix:
         include:
@@ -42,7 +42,7 @@ jobs:
           context: .
           file: .docker/Dockerfile
           push: true
-          tags: ${{ secrets.DOKER_IMAGE }}:${{steps.vars.outputs.tag}}
+          tags: rundax/go-bitsong:${{steps.vars.outputs.tag}}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
         # This ugly bit is necessary if you don't want your cache to grow forever
