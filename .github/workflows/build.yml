@@ -35,7 +35,7 @@ jobs:
 #          username: ${{ github.actor }}
 #          password: ${{ secrets.DOCKERHUB_TOKEN }}
       # And make it available for the builds
-      - name: Image digest
+      - name: Image
         run: echo ${{ github }}
 
       - name: Build and push
