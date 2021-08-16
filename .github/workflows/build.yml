@@ -35,6 +35,9 @@ jobs:
 #          username: ${{ github.actor }}
 #          password: ${{ secrets.DOCKERHUB_TOKEN }}
       # And make it available for the builds
+      - name: Image digest
+        run: echo ${{ github }}
+
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
@@ -43,7 +46,9 @@ jobs:
 #          push: true
           tags: ${{ github.actor }}/go-bitsong:${{steps.vars.outputs.tag}}
           cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new
+          cache-to: type=local,dest=/tmp/.buildx-cache-new4
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
         # This ugly bit is necessary if you don't want your cache to grow forever
         # till it hits GitHub's limit of 5GB.
         # Temp fix
