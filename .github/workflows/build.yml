@@ -40,14 +40,14 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v2
         env:
-          DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USER }}
+          DOCKERHUB_TEDT: ${{ secrets.DOCKERHUB_USER }}
         with:
           context: .
           file: .docker/Dockerfile
 #          push: true
-          tags: ${{ env.DOCKERHUB_USER }}/go-bitsong:${{steps.vars.outputs.tag}}
+          tags: ${{ env.DOCKERHUB_TEDT }}/go-bitsong:${{steps.vars.outputs.tag}}
           cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new4
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
         # This ugly bit is necessary if you don't want your cache to grow forever
