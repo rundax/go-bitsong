@@ -14,8 +14,8 @@ jobs:
             os-name: "linux"
           - os: macos-latest
             os-name: "osx"
-          - os: windows-latest
-            os-name: "windows"
+#          - os: windows-latest
+#            os-name: "windows"
     runs-on: ${{ matrix.os }}
     steps:
       # Check out code
