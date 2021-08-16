@@ -17,20 +17,20 @@ RUN make go-mod-cache && \
 
 RUN ls -lah /go
 
-## Final image
-#FROM alpine:latest
+# Final image
+FROM alpine:latest
+
+# Install ca-certificates
+RUN apk add --update ca-certificates
+WORKDIR /root
+
+RUN ls -lah /
+# Copy over binaries from the build-env
+COPY --from=build-env /go/bin/bitsongd /usr/bin/bitsongd
+COPY --from=build-env /go/bin/bitsongcli /usr/bin/bitsongcli
 #
-## Install ca-certificates
-#RUN apk add --update ca-certificates
-#WORKDIR /root
-#
-#RUN ls -lah /
-## Copy over binaries from the build-env
-#COPY --from=build-env /go/bin/bitsongd /usr/bin/bitsongd
-#COPY --from=build-env /go/bin/bitsongcli /usr/bin/bitsongcli
-#
-#RUN apk add --no-cache shadow
-#RUN apk add bash
+RUN apk add --no-cache shadow
+RUN apk add bash
 #
 ####
 #### Envs
