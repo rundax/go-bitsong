@@ -45,7 +45,7 @@ jobs:
           context: .
           file: .docker/Dockerfile
 #          push: true
-          tags: ${GITHUB_REPOSITORY}:${{steps.vars.outputs.tag}}
+          tags: ${{ github.repository }}:${{steps.vars.outputs.tag}}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
       - name: Image digest
